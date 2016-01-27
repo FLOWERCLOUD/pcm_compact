@@ -5,7 +5,7 @@
 #include <time.h>
 #ifdef WIN32
 #include <direct.h>
-#include "DeformaleRegistration.h"
+#include "DeformableRegistration.h"
 #define get_current_dir _getcwd
 #else
 #include <unistd.h>

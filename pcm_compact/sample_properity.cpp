@@ -8,6 +8,8 @@ using namespace std;
 //#define USE_ALL_CURVATURE
 
 namespace SampleManipulation{
+	ScalarType minVal;
+	ScalarType maxVal;
 void compute_normal( IndexType selected_smp,  NormalType& baseline )
 {
 	const IndexType k = 36;

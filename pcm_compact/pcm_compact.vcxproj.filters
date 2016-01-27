@@ -60,6 +60,27 @@
     <ClCompile Include="vertex.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="TrajectoryClassifier.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="DeformableRegistration.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="GCop.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="multiway_propagation.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="graph_cut_node.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="co_segmentation.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="gco-v3.0\GCoptimization.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bfs_classifier.hpp">
@@ -129,6 +150,33 @@
       <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="J_linkage_Matlab.hpp">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="TrajectoryClassifier.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="DeformableRegistration.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="traj2AffineModel_distance.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="traj2model_distance.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="GCop.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="multiway_propagation.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="co_segmentation.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="graph_cut_node.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="gco-v3.0\GCoptimization.h">
       <Filter>Algorithm</Filter>
     </ClInclude>
   </ItemGroup>

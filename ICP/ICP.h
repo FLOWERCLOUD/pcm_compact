@@ -277,7 +277,8 @@ namespace SICP {
                        max_icp(100),
                        max_outer(100),
                        max_inner(1),
-                       stop(1e-5) {}
+                       //stop(0.00001) {}
+					   stop(0.00001f){}
         /// Parameters
         bool use_penalty; /// if use_penalty then penalty method else ADMM or ALM (see max_inner)
         float p;         /// p norm
@@ -589,7 +590,7 @@ inline    void trimmed_weight(Eigen::VectorXd& r, double p) {
         }
         std::sort(sortedDist.begin(), sortedDist.end(), sort_pred());
         r.setZero();
-        int nbV = r.rows()*p;
+        int nbV = (int)(r.rows()*p);
         for(int i=0; i<nbV; ++i) {
             r(sortedDist[i].first) = 1.0;
         }

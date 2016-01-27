@@ -110,8 +110,8 @@
 #include "graph.cpp"
 #include "maxflow.cpp"
 
-#include "graph_cut_node.h"//default current folder
-
+//#include "graph_cut_node.h"//default current folder
+class GraphNodeCtr;
 #include "BoostGraph.h"
 
 /////////////////////////////////////////////////////////////////////

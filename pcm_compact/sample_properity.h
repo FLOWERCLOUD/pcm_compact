@@ -42,8 +42,8 @@ namespace SampleManipulation{
 
 	};
 
-	ScalarType minVal;
-	ScalarType maxVal;
+	extern ScalarType minVal;
+	extern ScalarType maxVal;
 }
 
 #endif

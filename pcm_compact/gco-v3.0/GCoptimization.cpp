@@ -2,6 +2,7 @@
 #include <mex.h>
 #endif
 #include "GCoptimization.h"
+#include "graph_cut_node.h"
 #include "gco-v3.0/LinkedBlockList.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -2118,8 +2119,8 @@ ScalarType GCoptimizationGeneralGraph::smoothCostFn::maxCurvature(IndexType side
 	ScalarType s_cur = rationCurNode(s_node->frame,s_node->index);
 	ScalarType t_cur = rationCurNode(t_node->frame,t_node->index);
 
-	s_cur = max(s_cur,0.005f);
-	t_cur = max(t_cur,0.005f);
+	s_cur = max(s_cur,(ScalarType)0.005f);
+	t_cur = max(t_cur,(ScalarType)0.005f);
 
 	ScalarType cva = max(1/s_cur,1/t_cur);
 
@@ -2213,8 +2214,8 @@ ScalarType GCoptimizationGeneralGraph::smoothCostFn::curvatureMaxOnly(IndexType 
 	ScalarType s_cur = rationCurNode(s_node->frame,s_node->index);
 	ScalarType t_cur = rationCurNode(t_node->frame,t_node->index);
 
-	s_cur = max(s_cur,0.005f);
-	t_cur = max(t_cur,0.005f);
+	s_cur = max(s_cur,(ScalarType)0.005f);
+	t_cur = max(t_cur,(ScalarType)0.005f);
 
 	ScalarType cva = max(1/s_cur,1/t_cur);
 
@@ -2245,7 +2246,7 @@ ScalarType GCoptimizationGeneralGraph::smoothCostFn::distantOnly(IndexType side1
 
 	ScalarType inVal = sN.dot(tN);
 
-	dist = max(dist,0.001f); //1.5次方,以及法向夹角
+	dist = max(dist,(ScalarType)0.001f); //1.5次方,以及法向夹角
  	//Logger<<"dist = "<<dist<<endl;
  //   dist = std::powf(dist,3);
 	//dist = sqrtf(dist);
@@ -2288,8 +2289,8 @@ ScalarType GCoptimizationGeneralGraph::smoothCostFn::distAndCurv(IndexType side1
 	ScalarType s_cur = rationCurNode(s_node->frame,s_node->index);
 	ScalarType t_cur = rationCurNode(t_node->frame,t_node->index);
 
-	s_cur = max(s_cur,0.001f);
-	t_cur = max(t_cur,0.001f);
+	s_cur = max(s_cur,(ScalarType)0.001f);
+	t_cur = max(t_cur,(ScalarType)0.001f);
 
 	//ScalarType cva = max(1/s_cur,1/t_cur);
 	ScalarType minCur = min(s_cur,t_cur);
@@ -2489,8 +2490,8 @@ ScalarType GCoptimizationGeneralGraph::smoothCostFn::curPairSmooth(IndexType fra
 
 	//Logger<<"res = "<<up/outdist<<endl;
 	//(up)
-	up = max(up,0.00015f);
-	outdist = max(outdist,0.00015f);
+	up = max(up,(ScalarType)0.00015f);
+	outdist = max(outdist,(ScalarType)0.00015f);
 
 
 	//return up/outdist;
