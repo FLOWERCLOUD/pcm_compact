@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Algorithm">
+      <UniqueIdentifier>{765204ee-cf92-49ba-80c8-584a65a3f22b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Basic">
+      <UniqueIdentifier>{99b1e431-68c8-49fa-b0a7-3f6ec21667a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{5e95f59b-387d-4ded-ab2a-619b15fee170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{9c3daa2a-f73f-41bc-baf2-ba4c0a0f8cb1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphMatching.cpp">
+      <Filter>Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="globals.cpp">
+      <Filter>Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="color_table.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="console.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="file_io.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="file_system.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="sample_properity.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="sample.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="sample_set.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bfs_classifier.hpp">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="BoostGraph.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphMatching.h">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ICP\kdtree.hpp">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_types.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="globals.h">
+      <Filter>Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="color_table.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="console.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="file_io.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="file_system.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ICP\ICP.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ICP\J_linkage.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ICP\J_linkage_II.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="octree.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="pool_allocator.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="sample_properity.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ICP\T_linkage.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="box.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="sample.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="sample_set.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="selectable_item.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="J_linkage_Matlab.hpp">
+      <Filter>Algorithm</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
