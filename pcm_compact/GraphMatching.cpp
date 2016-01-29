@@ -6,8 +6,8 @@ void GraphMatch::calculateSimilar2Frame()
 
 	HFrame& cur_frame = components_[srFrame];
 
-	IndexType srLevel = components_[srFrame].hier_graph.size();
-	IndexType tgLevel = components_[srFrame].hier_graph.size();
+	IndexType srLevel = (IndexType)components_[srFrame].hier_graph.size();
+	IndexType tgLevel = (IndexType)components_[srFrame].hier_graph.size();
 
 	srLevel--;
 	tgLevel--;
@@ -33,10 +33,10 @@ void GraphMatch::calculateSimilar2Frame()
 			}
 		}
 
-		IndexType vtx_id = *CFvertex_biter;
+		IndexType vtx_id = (IndexType)*CFvertex_biter;
 
 
-		IndexType vtxSize = components_[srFrame].hier_label_bucket[srLevel][vtx_id]->vertex_bucket.size();
+		IndexType vtxSize = (IndexType)components_[srFrame].hier_label_bucket[srLevel][vtx_id]->vertex_bucket.size();
 
 		if ( vtxSize < 5) //点个数太少则不去找对应点
 		{
@@ -83,7 +83,7 @@ void GraphMatch::calculateSimilar2Frame()
 
 		//build patch correspondece		
 
-		IndexType corLabelId = (*NFcmp_node.begin());
+		IndexType corLabelId = (IndexType)(*NFcmp_node.begin());
 
 		Logger<<srFrame<<"帧的块"<<vtx_id<<"与帧"<<tgFrame<<"的块"<<corLabelId<<"对应.\n";
 
@@ -107,7 +107,7 @@ void GraphMatch::matchNextFrameOnePt(set<IndexType>& CFcmp_node, IndexType srGra
 	LabelsGraph::vertex_iterator NFvertex_eiter;
 	LabelsGraph::adjacency_iterator  NFadj_bitr ,NFadj_eitr;
 
-	IndexType gLevel = components_[tgFrame].hier_graph.size();
+	IndexType gLevel = (IndexType)components_[tgFrame].hier_graph.size();
 
 	LabelsGraph* labelGraphOfNFrame = components_[tgFrame].hier_graph[tgGraLevel];
 
@@ -117,7 +117,7 @@ void GraphMatch::matchNextFrameOnePt(set<IndexType>& CFcmp_node, IndexType srGra
 
 	for(; NFvertex_biter != NFvertex_eiter; ++NFvertex_biter)
 	{
-		IndexType vtx_num = components_[tgFrame].hier_label_bucket[tgGraLevel][*NFvertex_biter]->vertex_bucket.size();
+		IndexType vtx_num = (IndexType)components_[tgFrame].hier_label_bucket[tgGraLevel][*NFvertex_biter]->vertex_bucket.size();
 		
 		if (vtx_num < 5)
 		{
@@ -128,11 +128,11 @@ void GraphMatch::matchNextFrameOnePt(set<IndexType>& CFcmp_node, IndexType srGra
 
 		std::set<set<IndexType> > comp_set;	
 		NFcmp_node.clear();
-		NFcmp_node.insert(*NFvertex_biter);
+		NFcmp_node.insert((IndexType)*NFvertex_biter);
 		comp_set.insert(NFcmp_node);
 		NFrameSetSet_.insert(comp_set.begin() , comp_set.end() );
-		tadj_map_.insert( std::make_pair(* NFvertex_biter ,NFcmp_node));
-		ttotal_map_.insert( std::make_pair( * NFvertex_biter , comp_set));
+		tadj_map_.insert( std::make_pair((IndexType)*NFvertex_biter ,NFcmp_node));
+		ttotal_map_.insert( std::make_pair( (IndexType)* NFvertex_biter , comp_set));
 
 		//ScalarType  error = distance2PatchesLevel(CFcmp_node, NFcmp_node, srGraLevel, tgGraLevel);
 
@@ -184,11 +184,11 @@ ScalarType GraphMatch::distBetween2Frame4Items(const set<IndexType>& sPatches, c
 	computer_common(srVertex, tgVertex,backComVtx,isTo);
 
 
-	ScalarType srV_size = srVertex.size();
-	ScalarType tgV_size = tgVertex.size();
+	ScalarType srV_size = (ScalarType)srVertex.size();
+	ScalarType tgV_size = (ScalarType)tgVertex.size();
 
-	IndexType toCom_size = toComVtx.size();
-	IndexType backCom_size = backComVtx.size();
+	IndexType toCom_size = (IndexType)toComVtx.size();
+	IndexType backCom_size = (IndexType)backComVtx.size();
 
 	ScalarType corValue =  0.5 * (toCom_size/srV_size + backCom_size/tgV_size );
 
@@ -251,7 +251,7 @@ ScalarType GraphMatch::toDeformationErr(map<IndexType,HVertex*>& toComVtx)
 	Sample& oriFrame = sample_set_[srFrame];
 	Sample& tarFrame = sample_set_[tgFrame];
 
-	IndexType toPsSize = toComVtx.size();
+	IndexType toPsSize = (IndexType)toComVtx.size();
 
 
 	Matrix3X s_coord, t_coord;
@@ -295,7 +295,7 @@ ScalarType GraphMatch::backDeformationErr(map<IndexType,HVertex*>& backeComVtx)
 	Sample& tarFrame = sample_set_[srFrame];
 
 
-	IndexType backPsSize = backeComVtx.size();
+	IndexType backPsSize = (IndexType)backeComVtx.size();
 
 	Matrix3X s_coord, t_coord;
 	s_coord.setZero(3, backPsSize);
@@ -333,12 +333,12 @@ ScalarType GraphMatch::backDeformationErr(map<IndexType,HVertex*>& backeComVtx)
 
 void  GraphMatch::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 & rotMat,MatrixXX & transVec)
 {
-	Eigen::Vector3f X_mean, Y_mean;
+	Eigen::Vector3d X_mean, Y_mean;
 
 	for(int i=0; i<3; ++i) //计算两点云的均值
 	{
-		X_mean(i) = srCloud.row(i).sum()/srCloud.cols();
-		Y_mean(i) = tgCloud.row(i).sum()/tgCloud.cols();
+		X_mean(i) = (ScalarType)srCloud.row(i).sum()/srCloud.cols();
+		Y_mean(i) = (ScalarType)tgCloud.row(i).sum()/tgCloud.cols();
 	}
 
 	srCloud.colwise() -= X_mean;
@@ -346,7 +346,7 @@ void  GraphMatch::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 & r
 
 	/// Compute transformation
 	Eigen::Affine3f transformation;
-	Eigen::Matrix3f sigma = srCloud * tgCloud.transpose();
+	Eigen::Matrix3f sigma = (srCloud * tgCloud.transpose()).cast<float>();
 	Eigen::JacobiSVD<Eigen::Matrix3f> svd(sigma, Eigen::ComputeFullU | Eigen::ComputeFullV);
 	if(svd.matrixU().determinant()*svd.matrixV().determinant() < 0.0)//contains reflection
 	{
@@ -357,8 +357,8 @@ void  GraphMatch::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 & r
 		transformation.linear().noalias() = svd.matrixV()*svd.matrixU().transpose();//计算旋转矩阵
 	}
 
-	transVec = Y_mean - transformation.linear()*X_mean;
-	rotMat = transformation.linear() ;
+	transVec = Y_mean - (transformation.linear().cast<double>()*X_mean);
+	rotMat = transformation.linear().cast<ScalarType>();
 
 	srCloud.colwise() += X_mean;
 	tgCloud.colwise() += Y_mean;
@@ -405,11 +405,11 @@ ScalarType GraphMatch::distance2PatchesLevel(const set<IndexType>& sPatches,cons
 
 	//ScalarType scaleShape =  abs((int) (srVertex.size() - tgVertex.size() )) / std::max(srVertex.size(), tgVertex.size() );
 
-	ScalarType srV_size = srVertex.size();
-	ScalarType tgV_size = tgVertex.size();
+	ScalarType srV_size = (ScalarType)srVertex.size();
+	ScalarType tgV_size = (ScalarType)tgVertex.size();
 
-	IndexType toCom_size = toComVtx.size();
-	IndexType backCom_size = backComVtx.size();
+	IndexType toCom_size = (IndexType)toComVtx.size();
+	IndexType backCom_size = (IndexType)backComVtx.size();
 
 	ScalarType corValue =  0.5 * (toCom_size/srV_size + backCom_size/tgV_size );
 
@@ -456,7 +456,7 @@ void GraphMatch::computer_common(map<IndexType,HVertex*>& srPatchesVtx, map<Inde
 
 	return;
 }
-
+//
 void GraphMatch::setMatchset(IndexType srLevel, IndexType tgLevel)
 {
 	if( components_.find(srFrame) == components_.end())return;
@@ -483,7 +483,7 @@ void GraphMatch::setMatchset(IndexType srLevel, IndexType tgLevel)
 		std::set<set<IndexType> > comp_set;
 
 		curNodeSet.clear();
-		curNodeSet.insert(*CFvertex_biter);
+		curNodeSet.insert((IndexType)*CFvertex_biter);
 
 		if( CFadj_bitr == CFadj_eitr )/** 说明该节点没有邻接节点，独立成块**/
 		{
@@ -491,7 +491,7 @@ void GraphMatch::setMatchset(IndexType srLevel, IndexType tgLevel)
 		 	std::set<set<IndexType> > comp_set;
 		 
 		 	curNodeSet.clear();
-		 	curNodeSet.insert(*CFvertex_biter);
+		 	curNodeSet.insert((IndexType)*CFvertex_biter);
 		 
 		 	// 插入下一帧的循环
 		 	matchNextFrameSet(curNodeSet,*nextGraph,srLevel,tgLevel);
@@ -499,8 +499,8 @@ void GraphMatch::setMatchset(IndexType srLevel, IndexType tgLevel)
 		 	comp_set.insert(curNodeSet);
 		 	unique_pair_set.insert(curNodeSet);
 		 	CFrameSetSet_.insert(comp_set.begin() , comp_set.end() ); 
-		 	sadj_map_.insert( std::make_pair(* CFvertex_biter ,curNodeSet));
-		 	stotal_map_.insert( std::make_pair( * CFvertex_biter , comp_set));
+		 	sadj_map_.insert( std::make_pair((IndexType)*CFvertex_biter ,curNodeSet));
+		 	stotal_map_.insert( std::make_pair( (IndexType)* CFvertex_biter , comp_set));
 		 
 		}else/*此节点存在邻接节点*/
 		{ 	 
@@ -508,21 +508,21 @@ void GraphMatch::setMatchset(IndexType srLevel, IndexType tgLevel)
 		 	set<IndexType> cmps_node; //
 		 	comp_set.clear();
 		 	cmps_node.clear();
-		 	cmps_node.insert(*CFvertex_biter);   //单独节点
+		 	cmps_node.insert((IndexType)*CFvertex_biter);   //单独节点
 		 	comp_set.insert(cmps_node);
 		 	cmps_node.clear();
 		 
 		 	set<set<IndexType> > ::iterator CFcomsetbitr ,CFcomseteitr;
 		 	for( ; CFadj_bitr != CFadj_eitr ; ++CFadj_bitr )
 			{
-		 		cmps_node.insert( *CFadj_bitr);  // 用于存储邻点
+		 		cmps_node.insert( (IndexType)*CFadj_bitr);  // 用于存储邻点
 		 		CFcomsetbitr = comp_set.begin();
 		 		CFcomseteitr = comp_set.end();
 		 		if( CFcomsetbitr == CFcomseteitr  )/*初始为空*/
 				{
 		 			//插入根节点
 		 			std::set<IndexType> cmps_node;
-		 			cmps_node.insert(*CFvertex_biter);   
+		 			cmps_node.insert((IndexType)*CFvertex_biter);   
 		 			comp_set.insert(cmps_node);
 		 		}
 		 		CFcomsetbitr = comp_set.begin();
@@ -535,15 +535,15 @@ void GraphMatch::setMatchset(IndexType srLevel, IndexType tgLevel)
 				{
 		 
 		 			set<IndexType> new_set = *CFcomsetbitr; 
-		 			new_set.insert( *CFadj_bitr );
+		 			new_set.insert( (IndexType)*CFadj_bitr );
 		 			tmpsetset.insert( new_set); 
 		 		}
 		 		comp_set = tmpsetset;
 		 	}
 
 		 	CFrameSetSet_.insert(comp_set.begin() , comp_set.end() );
-		 	sadj_map_.insert( std::make_pair(* CFvertex_biter ,cmps_node));
-		 	stotal_map_.insert( std::make_pair( * CFvertex_biter , comp_set));
+		 	sadj_map_.insert( std::make_pair((IndexType)*CFvertex_biter ,cmps_node));
+		 	stotal_map_.insert( std::make_pair( (IndexType)*CFvertex_biter , comp_set));
 		 	CFcomsetbitr = comp_set.begin();
 		 	CFcomseteitr = comp_set.end();
 
@@ -566,7 +566,7 @@ void GraphMatch::setMatchset(IndexType srLevel, IndexType tgLevel)
 		}
 	}
 }
-
+//
 void  GraphMatch::matchNextFrameSet(set<IndexType>& curNodeSet, LabelsGraph& tgGraph,IndexType srGraLevel,IndexType tgGraLevel)
 {
 	if(COUT_DEBUG)std::cout<<"处理下一帧节点，并计算与当前节点"<<std::endl;
@@ -588,11 +588,11 @@ void  GraphMatch::matchNextFrameSet(set<IndexType>& curNodeSet, LabelsGraph& tgG
 		{
 			std::set<set<IndexType> > comp_set;	
 			nextNodeSet.clear();
-			nextNodeSet.insert(*NFvertex_biter);
+			nextNodeSet.insert((IndexType)*NFvertex_biter);
 			comp_set.insert(nextNodeSet);
 			NFrameSetSet_.insert(comp_set.begin() , comp_set.end() );
-			tadj_map_.insert( std::make_pair(* NFvertex_biter ,nextNodeSet));
-			ttotal_map_.insert( std::make_pair( * NFvertex_biter , comp_set));
+			tadj_map_.insert( std::make_pair((IndexType)*NFvertex_biter ,nextNodeSet));
+			ttotal_map_.insert( std::make_pair( (IndexType)*NFvertex_biter , comp_set));
 
 			/*   此处计算 组合节间 error*/
 			//ScalarType  error = distance2PatchesLevel(curNodeSet,nextNodeSet,srGraLevel,tgGraLevel);
@@ -607,7 +607,7 @@ void  GraphMatch::matchNextFrameSet(set<IndexType>& curNodeSet, LabelsGraph& tgG
 			std::set<IndexType> cmps_node;
 			comp_set.clear();
 			cmps_node.clear();
-			cmps_node.insert(*NFvertex_biter);   //
+			cmps_node.insert((IndexType)*NFvertex_biter);   //
 			comp_set.insert( cmps_node);
 			cmps_node.clear();
 
@@ -617,14 +617,14 @@ void  GraphMatch::matchNextFrameSet(set<IndexType>& curNodeSet, LabelsGraph& tgG
 			std::set<set<IndexType> > ::iterator NFcomsetbitr ,NFcomseteitr;
 			for(; NFadj_bitr != NFadj_eitr ; NFadj_bitr++ )
 			{
-		     	cmps_node.insert(*NFadj_bitr);
+		     	cmps_node.insert((IndexType)*NFadj_bitr);
 				NFcomsetbitr = comp_set.begin();
 				NFcomseteitr = comp_set.end();
 				if( NFcomsetbitr == NFcomseteitr)/*初始为空*/ 
 				{
 					//插入根节点
 					std::set<IndexType> cmps_node;
-					cmps_node.insert(*NFvertex_biter);   
+					cmps_node.insert((IndexType)*NFvertex_biter);   
 					comp_set.insert(cmps_node);
 				}
 
@@ -637,7 +637,7 @@ void  GraphMatch::matchNextFrameSet(set<IndexType>& curNodeSet, LabelsGraph& tgG
 				for(; NFcomsetbitr != NFcomseteitr ; ++ NFcomsetbitr)
 				{
 					set<IndexType> new_set = *NFcomsetbitr; 
-					new_set.insert( *NFadj_bitr );
+					new_set.insert( (IndexType)*NFadj_bitr );
 					tmpsetset.insert( new_set); 
 
 					if(COUT_DEBUG)std::cout<<"after tmpsetset test:"<< std::endl;
@@ -649,8 +649,8 @@ void  GraphMatch::matchNextFrameSet(set<IndexType>& curNodeSet, LabelsGraph& tgG
 			}
 
 			NFrameSetSet_.insert(comp_set.begin() , comp_set.end() );
-			tadj_map_.insert( std::make_pair(* NFvertex_biter , cmps_node));
-			ttotal_map_.insert( std::make_pair( * NFvertex_biter , comp_set));
+			tadj_map_.insert( std::make_pair((IndexType)*NFvertex_biter , cmps_node));
+			ttotal_map_.insert( std::make_pair( (IndexType)*NFvertex_biter , comp_set));
 			NFcomsetbitr = comp_set.begin();
 			NFcomseteitr = comp_set.end();
 
@@ -679,7 +679,7 @@ void  GraphMatch::matchNextFrameSet(set<IndexType>& curNodeSet, LabelsGraph& tgG
 
 	}// 遍历每个节点
 }
-
+//
 void GraphMatch::mergePatches(IndexType srLevel,IndexType tgLevel)
 {
 
@@ -729,7 +729,7 @@ void GraphMatch::mergeSrPatches(IndexType srLevel,set<IndexType>& srBestCombine)
 	mergePatchesOri(srLevel,srFrame,srBestCombine);
 
 }
-
+//
 void GraphMatch::mergeTgPatches(IndexType tgLevel,set<IndexType>& tgBestCombine)
 {
 	
@@ -789,7 +789,7 @@ IndexType GraphMatch::mergePatchesOri(IndexType depth,IndexType frameId, set<Ind
 	//Sample& csmp = SampleSet::get_instance()[frameId];
 
 	LabelsGraph* new_graph  ;  //新图 指针
-	IndexType	oriNodeNum  = boost::num_vertices( oriGra);     
+	IndexType	oriNodeNum  = (IndexType)boost::num_vertices( oriGra);     
 	IndexType  targetLabel;
 	map<IndexType,IndexType> labelIdmap;
 	new_graph = mergeIter(depth,frameId,oriGra , old_label_bucket ,patches ,targetLabel,labelIdmap);
@@ -801,7 +801,7 @@ IndexType GraphMatch::mergePatchesOri(IndexType depth,IndexType frameId, set<Ind
 	return targetLabel;
 
 }
-
+//
 IndexType GraphMatch::mergeAllNodes(IndexType frameId, set<IndexType>& patches)
 {
 	if ( patches.size() < 2)
@@ -811,8 +811,8 @@ IndexType GraphMatch::mergeAllNodes(IndexType frameId, set<IndexType>& patches)
 
 	HFrame& cframe = components_[frameId];
 
-	IndexType depth = 0;//每次都获取相同的层
-	 depth = cframe.hier_graph.size();
+	IndexType depth = (IndexType)0;//每次都获取相同的层
+	 depth = (IndexType)cframe.hier_graph.size();
 	 -- depth;
 
 	vector<LabelsGraph*>& chierGraph = cframe.hier_graph;
@@ -837,7 +837,7 @@ IndexType GraphMatch::mergeAllNodes(IndexType frameId, set<IndexType>& patches)
 	Sample& csmp = SampleSet::get_instance()[frameId];
 
 	LabelsGraph* new_graph  ;  //新图 指针
-	IndexType	oriNodeNum  = boost::num_vertices( oriGra);     
+	IndexType	oriNodeNum  = (IndexType)boost::num_vertices( oriGra);     
 	IndexType  targetLabel;
 	map<IndexType,IndexType> LabelIdIndex;
 	new_graph = mergeIter(depth,frameId,oriGra , old_label_bucket ,patches ,targetLabel,LabelIdIndex);
@@ -849,7 +849,7 @@ IndexType GraphMatch::mergeAllNodes(IndexType frameId, set<IndexType>& patches)
 
 	return targetLabel;
 }
-
+//
 LabelsGraph* GraphMatch::mergeIter(IndexType gLevel,  IndexType frameId, LabelsGraph& _orIG ,
 								   vector<HLabel*>& old_label_bucket, set<IndexType>& patches ,IndexType& new_label,map<IndexType,IndexType>& LabelIdIndex )
 {
@@ -868,7 +868,7 @@ LabelsGraph* GraphMatch::mergeIter(IndexType gLevel,  IndexType frameId, LabelsG
 	//先遍历每个节点 ，检查其中点的数量
 	IndexType	oriNodeNum ;
 	IndexType	newNodeNum;
-	newNodeNum = oriNodeNum  = boost::num_vertices( oriGra);   //初始赋值
+	newNodeNum = oriNodeNum  = (IndexType)boost::num_vertices( oriGra);   //初始赋值
 	assert( newNodeNum > patches.size());
 
 	LabelsGraph*	newGraph = &_orIG;  // 初始赋值
@@ -885,11 +885,11 @@ LabelsGraph* GraphMatch::mergeIter(IndexType gLevel,  IndexType frameId, LabelsG
 		new_patches = new set<int>();
 		new_patches->clear();
 		cvd = *vtxbitr;
-		IndexType clabelSize = cLable.vertex_bucket.size();
+		IndexType clabelSize = (IndexType)cLable.vertex_bucket.size();
 
 		//Logger<<"label 号： "<< cLable.label_id <<"   点的个数 :"<< clabelSize<<std::endl;
 
-		if( patches.find( cvd) != patches.end() )
+		if( patches.find((int)cvd) != patches.end() )
 		{
 			newGraph = new LabelsGraph();
 			OutEdgeIterator outegbitr , outegeitr ;
@@ -911,11 +911,11 @@ LabelsGraph* GraphMatch::mergeIter(IndexType gLevel,  IndexType frameId, LabelsG
 				++nextoutegbitr;
 				VertexDescriptor sd = boost::target( *outegbitr ,oriGra);
 
-				lowAdjNodeId.insert(sd);
+				lowAdjNodeId.insert((IndexType)sd);
 
-				if (patches.find(sd) != patches.end())
+				if (patches.find((int)sd) != patches.end())
 				{
-					bestNeibIndexInVector = sd;
+					bestNeibIndexInVector = (IndexType)sd;
 				}
 
 				recordEdgeVD.push_back( sd);
@@ -1027,13 +1027,13 @@ LabelsGraph* GraphMatch::mergeIter(IndexType gLevel,  IndexType frameId, LabelsG
 	//return mergeIter(gLevel,frameId, *newGraph ,old_label_bucket, *new_patches ,new_label,LabelIdIndex);
 
 }
-
+//
 IndexType GraphMatch::mergeAllSetOneTime(LabelsGraph& _orIG ,vector<HLabel*>& old_label_bucket , set<IndexType>& patches ,IndexType& new_label )
 {
 
 	return 0;
 }
-
+//
 vector<HLabel*>* GraphMatch::DeepCopyHLableVec( const vector<HLabel*>* _p_oriHLabelvec )
 {
 	vector<HLabel*>* _p_newHLabelvec;
@@ -1051,7 +1051,7 @@ vector<HLabel*>* GraphMatch::DeepCopyHLableVec( const vector<HLabel*>* _p_oriHLa
 
 	return _p_newHLabelvec;
 }
-
+//
 HLabel* GraphMatch::DeepCopyHLabel( const HLabel* _p_oriHlabel  )
 {
 	HLabel* _p_newHlabel = new HLabel( *_p_oriHlabel);
@@ -1075,7 +1075,7 @@ HVertex* GraphMatch::DeepCopyVertex( const HVertex* _p_orivtx, HLabel* new_label
 	HVertex* _p_newvtx = new HVertex( *_p_orivtx);
 	//这个新的 HVertex 中的 label_parent 需重新赋值；
 
-	IndexType gSize = _p_newvtx->label_parent.size();
+	IndexType gSize = (IndexType)_p_newvtx->label_parent.size();
 
 	_p_newvtx->label_parent[gSize - 1] = new_label_parent;
 
@@ -1127,8 +1127,8 @@ void GraphMatch::mergeTwoLabelAndPushBack(HLabel& _cLabel , HLabel& _bestNeiLabe
  	map<IndexType , HVertex*>& lvtxbck = _cLabel.vertex_bucket;
  	map<IndexType , HVertex*>& rvtxbck = _bestNeiLabel_.vertex_bucket;
  
- 	IndexType lsize = lvtxbck.size();
- 	IndexType rsize = rvtxbck.size();
+ 	IndexType lsize = (IndexType)lvtxbck.size();
+ 	IndexType rsize = (IndexType)rvtxbck.size();
  
  	IndexType	mergedLabel = 0;
  	if (lsize > rsize)
@@ -1149,7 +1149,7 @@ void GraphMatch::mergeTwoLabelAndPushBack(HLabel& _cLabel , HLabel& _bestNeiLabe
  	for( l_vtxbkbitr = lvtxbck.begin() ; l_vtxbkbitr != l_vtxbkeitr ;++ l_vtxbkbitr)
  	{
  		HVertex&  vtx = *(l_vtxbkbitr->second) ;
- 		IndexType gSize = vtx.label_parent.size();
+ 		IndexType gSize = (IndexType)vtx.label_parent.size();
  
  		vtx.label_parent[gSize - 1] = &_bestNeiLabel_;
  	}
@@ -1172,7 +1172,7 @@ void GraphMatch::mergeTwoLabelAndPushBack(HLabel& _cLabel , HLabel& _bestNeiLabe
  	}
 
 }
-
+//
 void GraphMatch::processAndCreateNewGraphAndPushBack(LabelsGraph& _preGraph , VertexDescriptor& _targetVd ,vector<HLabel*>& _labelvec_ ,
 										 map<IndexType ,IndexType>& labelofvtx_, LabelsGraph& newGraph_)
 {
@@ -1199,7 +1199,7 @@ void GraphMatch::processAndCreateNewGraphAndPushBack(LabelsGraph& _preGraph , Ve
 		}else if( *vtxbitr >_targetVd)
 		{
 			GraphVertexProperty newvp = _preGraph[*vtxbitr];
-			newvp.index =  *vtxbitr-1;
+			newvp.index =  (IndexType)(*vtxbitr-1);
 			add_vertex( newvp ,newGraph_);
 
 			//还要对label 对应的实体处理
@@ -1210,7 +1210,7 @@ void GraphMatch::processAndCreateNewGraphAndPushBack(LabelsGraph& _preGraph , Ve
 			for( ;vtxbckbitr != vtxbckeitr ;++vtxbckbitr)
 			{
 				//Logger<<"vtxbucket->first"<<vtxbckbitr->first<<"*vtxbitr"<<(*vtxbitr)-1<<std::endl;
-				labelofvtx_[ vtxbckbitr->first] = (*vtxbitr) -1;
+				labelofvtx_[ vtxbckbitr->first] = (IndexType)((*vtxbitr) -1);
 			}
 			//Logger<<"labelvec_ size"<<_labelvec_.size()<<std::endl;
 			newLabelvec.push_back( _labelvec_[ *vtxbitr]);
@@ -1245,12 +1245,12 @@ void GraphMatch::processAndCreateNewGraphAndPushBack(LabelsGraph& _preGraph , Ve
 			newEdge.index = egId;
 			if (sd < td)
 			{
-			   newEdge.start_ = sd;
-			   newEdge.end_ = td;
+			   newEdge.start_ = (IndexType)sd;
+			   newEdge.end_ = (IndexType)td;
 			}else
 			{
-				newEdge.start_ = td;
-				newEdge.end_ = sd;
+				newEdge.start_ = (IndexType)td;
+				newEdge.end_ = (IndexType)sd;
 			}
 
 			boost::add_edge(sd, td, newEdge, newGraph_);
@@ -1263,12 +1263,12 @@ void GraphMatch::processAndCreateNewGraphAndPushBack(LabelsGraph& _preGraph , Ve
 
 			if (sd - 1 < td)
 			{
-				newEdge.start_ = sd - 1;
-				newEdge.end_ = td;
+				newEdge.start_ = (IndexType)(sd - 1);
+				newEdge.end_ = (IndexType)td;
 			}else
 			{
-				newEdge.start_ = td;
-				newEdge.end_ = sd - 1;
+				newEdge.start_ = (IndexType)td;
+				newEdge.end_ = (IndexType)(sd - 1);
 			}
 
 			boost::add_edge( sd-1 ,td , newEdge, newGraph_);
@@ -1281,12 +1281,12 @@ void GraphMatch::processAndCreateNewGraphAndPushBack(LabelsGraph& _preGraph , Ve
 
 			if (sd < td - 1)
 			{
-				newEdge.start_ = sd;
-				newEdge.end_ = td - 1;
+				newEdge.start_ = (IndexType)sd;
+				newEdge.end_ = (IndexType)(td - 1);
 			}else
 			{
-				newEdge.start_ = td -1;
-				newEdge.end_ = sd;
+				newEdge.start_ = (IndexType)(td -1);
+				newEdge.end_ = (IndexType)sd;
 			}
 
 			boost::add_edge( sd , td-1 ,newEdge,newGraph_);
@@ -1299,12 +1299,12 @@ void GraphMatch::processAndCreateNewGraphAndPushBack(LabelsGraph& _preGraph , Ve
 
 			if (sd -1 < td - 1)
 			{
-				newEdge.start_ = sd - 1;
-				newEdge.end_ = td - 1;
+				newEdge.start_ = (IndexType)(sd - 1);
+				newEdge.end_ = (IndexType)(td - 1);
 			}else
 			{
-				newEdge.start_ = td -1;
-				newEdge.end_ = sd - 1;
+				newEdge.start_ = (IndexType)(td -1);
+				newEdge.end_ = (IndexType)(sd - 1);
 			}
 			boost::add_edge( sd -1 ,td -1 ,newEdge,newGraph_);
 
@@ -1319,7 +1319,7 @@ void GraphMatch::processAndCreateNewGraphAndPushBack(LabelsGraph& _preGraph , Ve
 // 		coutGraph(newGraph_);
 // 	}
 }
-
+//
 void GraphMatch::copyLabelBucket(vector<HLabel*>& leftLabels, const vector<HLabel*>& oriLabels)
 {
 	assert(oriLabels.size() > 0);
@@ -1334,7 +1334,7 @@ void GraphMatch::copyLabelBucket(vector<HLabel*>& leftLabels, const vector<HLabe
 		leftLabels.push_back(new_label);
 	}
 }
-
+//
 void GraphMatch::buildPatchCorrespondenceByLabel()
 {
 	for (auto fiter = components_.begin(); fiter != components_.end(); ++fiter )
@@ -1391,7 +1391,7 @@ void GraphMatch::printMatchingInformation()
 			{
 				IndexType labeId = (*lIter)->label_id;
 
-				IndexType vtxNum = (*lIter)->vertex_bucket.size();
+				IndexType vtxNum = (IndexType)(*lIter)->vertex_bucket.size();
 
 				HLabel* nextLabelBucket = (*lIter)->next_corr;
 
@@ -1412,7 +1412,7 @@ void GraphMatch::printMatchingInformation()
 
 							IndexType nLId = nextLabelBucket->label_id;
 
-							IndexType  nVtxNum = nextLabelBucket->vertex_bucket.size();
+							IndexType  nVtxNum = (IndexType)nextLabelBucket->vertex_bucket.size();
 
 							IndexType nextFlKey = frame_label_to_key(nFId,nLId);
 							isTrav[nextFlKey] = true;
@@ -1475,7 +1475,7 @@ void GraphMatch::findBestPatches(IndexType srLevel, IndexType tgLevel,set<IndexT
 		tgTempBest.clear();
 
 		//不管邻接边空不空,单个点都要与后面的点做判断
-			srTempBest.insert(*vBeginIter);
+			srTempBest.insert((IndexType)*vBeginIter);
              
 			//找到这个节点在下一帧的对应点
 			HLabel* nextPatch = vtxBucket[*vBeginIter]->next_corr;
@@ -1495,7 +1495,7 @@ void GraphMatch::findBestPatches(IndexType srLevel, IndexType tgLevel,set<IndexT
 
 				if (vNextBegIter == vNextEndIter)//对应点也是孤立点
 				{
-					tgTempBest.insert(*nodeIter);
+					tgTempBest.insert((IndexType)*nodeIter);
 
 					ScalarType error = distBetween2Setpatches(srTempBest,tgTempBest,srLevel,tgLevel);
 
@@ -1504,21 +1504,21 @@ void GraphMatch::findBestPatches(IndexType srLevel, IndexType tgLevel,set<IndexT
 						equeue_.push( PatchMatch(srTempBest,tgTempBest, error ) );
 					}
 
-					tgTempBest.erase(*nodeIter);
+					tgTempBest.erase((IndexType)*nodeIter);
 
 				}else
 				{
-					tgTempBest.insert(*nodeIter);
+					tgTempBest.insert((IndexType)*nodeIter);
 
-					IndexType vtxOriSize = vtxNextBucket[nodeId]->vertex_bucket.size();
+					IndexType vtxOriSize = (IndexType)vtxNextBucket[nodeId]->vertex_bucket.size();
 
-					for (; vNextBegIter != vNextEndIter; ++ vNextBegIter)//访问对应点的邻边
+					for (; vNextBegIter != vNextEndIter; ++vNextBegIter)//访问对应点的邻边
 					{
-						IndexType neigVtxSize = vtxNextBucket[*vNextBegIter]->vertex_bucket.size();
+						IndexType neigVtxSize = (IndexType)vtxNextBucket[*vNextBegIter]->vertex_bucket.size();
 
 // 						if (neigVtxSize < vtxOriSize)
 // 						{
-							tgTempBest.insert(*vNextBegIter);
+							tgTempBest.insert((IndexType)*vNextBegIter);
 
 							ScalarType error = distBetween2Setpatches(srTempBest,tgTempBest,srLevel,tgLevel);
 
@@ -1527,7 +1527,7 @@ void GraphMatch::findBestPatches(IndexType srLevel, IndexType tgLevel,set<IndexT
 								equeue_.push( PatchMatch(srTempBest,tgTempBest, error ) );
 							}
 
-							tgTempBest.erase(*vNextBegIter);
+							tgTempBest.erase((IndexType)*vNextBegIter);
 
 // 						}else
 // 						{
@@ -1552,15 +1552,15 @@ void GraphMatch::findBestPatches(IndexType srLevel, IndexType tgLevel,set<IndexT
 		if (vAdjBeginIter != vAdjEndIter)//非孤立的节点
 		{
            //srTempBest.insert(*vBeginIter);	   
-		   IndexType vtxNumSrOrignal = vtxBucket[*vBeginIter]->vertex_bucket.size();
+		   IndexType vtxNumSrOrignal = (IndexType)vtxBucket[*vBeginIter]->vertex_bucket.size();
 
 		   for (;vAdjBeginIter != vAdjEndIter; ++vAdjBeginIter)
 		   {
-			   IndexType vtxNumSrOriAdj = vtxBucket[*vAdjBeginIter]->vertex_bucket.size();
+			   IndexType vtxNumSrOriAdj = (IndexType)vtxBucket[*vAdjBeginIter]->vertex_bucket.size();
 
 			   if (vtxNumSrOriAdj < vtxNumSrOrignal)
 			   {
-				   srTempBest.insert(*vAdjBeginIter);//此时,srBestSet里有两个相邻的原始
+				   srTempBest.insert((IndexType)*vAdjBeginIter);//此时,srBestSet里有两个相邻的原始
 				   //找到各自的对应 A,B,tgTempSet总共三种组合{A} {B} {A,B}
 				   //case1  针对vBeginIter的对应点
 				   //找到这个节点在下一帧的对应点
@@ -1631,7 +1631,7 @@ void GraphMatch::findBestPatches(IndexType srLevel, IndexType tgLevel,set<IndexT
 
 				   }
 
-				   srTempBest.erase(*vAdjBeginIter);
+				   srTempBest.erase((IndexType)*vAdjBeginIter);
 
 			   }else
 			   {
@@ -1666,7 +1666,7 @@ void GraphMatch::findBestPatches(IndexType srLevel, IndexType tgLevel,set<IndexT
 // 	tgBestSet = bestPatch.tgPatches;
 
 }
-
+//
 void GraphMatch::mergePatchesAfterCoSeg(IndexType srLevel, IndexType tgLevel,set<IndexType>& srBestSet, set<IndexType>& tgBestSet)
 {
 	IndexType fpId = 6;
@@ -1773,11 +1773,11 @@ ScalarType GraphMatch::distBetween2Setpatches(const set<IndexType>& sPatches, co
 	computer_common(srVertex, tgVertex,backComVtx,isTo);
 
 
-	ScalarType srV_size = srVertex.size();
-	ScalarType tgV_size = tgVertex.size();
+	ScalarType srV_size = (ScalarType)srVertex.size();
+	ScalarType tgV_size = (ScalarType)tgVertex.size();
 
-	IndexType toCom_size = toComVtx.size();
-	IndexType backCom_size = backComVtx.size();
+	IndexType toCom_size = (IndexType)toComVtx.size();
+	IndexType backCom_size = (IndexType)backComVtx.size();
 
 	ScalarType corValue =  0.5 * (toCom_size/srV_size + backCom_size/tgV_size );
 
@@ -1833,7 +1833,7 @@ ScalarType GraphMatch::distBetween2Setpatches(const set<IndexType>& sPatches, co
 	}
 
 }
-
+//
 void GraphMatch::printNiceMatchingPatches()
 {
 	IndexType bestNum = 30;
@@ -1869,14 +1869,14 @@ void GraphMatch::printNiceMatchingPatches()
 		}
 	}
 }
-
+//
 ScalarType GraphMatch::toDeformationErrAllVtx(map<IndexType,HVertex*>& toVtx, map<IndexType,HVertex*>& backVtx)
 {
 	Sample& oriFrame = sample_set_[srFrame];
 	Sample& tarFrame = sample_set_[tgFrame];
 
-	IndexType toPsSize = toVtx.size();
-	IndexType backPsSize = backVtx.size();
+	IndexType toPsSize = (IndexType)toVtx.size();
+	IndexType backPsSize = (IndexType)backVtx.size();
 
 	Matrix3X s_coord, t_coord;
 	s_coord.setZero(3, toPsSize);
@@ -1899,14 +1899,16 @@ ScalarType GraphMatch::toDeformationErrAllVtx(map<IndexType,HVertex*>& toVtx, ma
 	}
 
 	//loacl ICP 
-	SICP::Parameters pa(false,2,10,1.2,1e5,20,20,1,1e-5);
+	SICP::Parameters pa(false,2,10,1.2f,1e5,20,20,1,1e-5f);
 	MatrixXXi localCor;
 	localCor.setZero(1,toPsSize);
 	Matrix3X oriCoor = s_coord;
 
 	Matrix3X corCoor;
-
-	SICP::point_w_point(s_coord,t_coord,localCor,pa);//front rotmate
+	Eigen::Matrix3Xf s_coordf,t_coordf;
+	s_coordf = s_coord.cast<float>();
+	t_coordf = t_coord.cast<float>();
+	SICP::point_w_point(s_coordf,t_coordf,localCor,pa);//front rotmate
 
 	getCorrCoor(t_coord,corCoor,localCor);
 
@@ -1927,14 +1929,14 @@ ScalarType GraphMatch::toDeformationErrAllVtx(map<IndexType,HVertex*>& toVtx, ma
 
 	return totDis;
 }
-
+//
 ScalarType GraphMatch::backDeformationErrAllVtx(map<IndexType,HVertex*>& toVtx, map<IndexType,HVertex*>& backVtx)
 {
 	Sample& oriFrame = sample_set_[srFrame];
 	Sample& tarFrame = sample_set_[tgFrame];
 
-	IndexType toPsSize = toVtx.size();
-	IndexType backPsSize = backVtx.size();
+	IndexType toPsSize = (IndexType)toVtx.size();
+	IndexType backPsSize = (IndexType)backVtx.size();
 
 	Matrix3X s_coord, t_coord;
 	s_coord.setZero(3, toPsSize);
@@ -1958,15 +1960,17 @@ ScalarType GraphMatch::backDeformationErrAllVtx(map<IndexType,HVertex*>& toVtx, 
 	}
 
 	//loacl ICP 
-	SICP::Parameters pa(false,2,10,1.2,1e5,20,20,1,1e-5);
+	SICP::Parameters pa(false,2,10,1.2f,1e5,20,20,1,1e-5f);
 	MatrixXXi localCor;
 	localCor.setZero(1,backPsSize);
 
 	Matrix3X oriCoor = t_coord;
 
 	Matrix3X corCoor;
-
-	SICP::point_w_point(t_coord,s_coord,localCor,pa);//front rotmate
+	Eigen::Matrix3Xf s_coordf,t_coordf;
+	s_coordf = s_coord.cast<float>();
+	t_coordf = t_coord.cast<float>();
+	SICP::point_w_point(t_coordf,s_coordf,localCor,pa);//front rotmate
 
 	getCorrCoor(s_coord,corCoor,localCor);
 
@@ -1989,7 +1993,7 @@ ScalarType GraphMatch::backDeformationErrAllVtx(map<IndexType,HVertex*>& toVtx, 
 }
 void GraphMatch::getCorrCoor(Matrix3X& tgCoor, Matrix3X& corrCoor, MatrixXXi& vtxMap)
 {
-	IndexType vtxSize = vtxMap.cols();
+	IndexType vtxSize = (IndexType)vtxMap.cols();
 
 	corrCoor.setZero(3, vtxSize);
 
@@ -1999,23 +2003,23 @@ void GraphMatch::getCorrCoor(Matrix3X& tgCoor, Matrix3X& corrCoor, MatrixXXi& vt
 	}
 
 }
-
+//
 void GraphMatch::mergeTinyPatches(IndexType frameId, IndexType outlierSize)
 {
 
 	HFrame& cur_frame = components_[frameId];
 
-	IndexType gLevel = cur_frame.hier_graph.size();//合并最高层中的小块
+	IndexType gLevel = (IndexType)cur_frame.hier_graph.size();//合并最高层中的小块
 
 	--gLevel;
 
 	vector<HLabel*> vtxBucket = cur_frame.hier_label_bucket[gLevel];
 
-	IndexType minSize = 1e5;
+	IndexType minSize = (IndexType)(1e5);
 
 	for (auto vIter = vtxBucket.begin(); vIter != vtxBucket.end(); ++vIter)
 	{
-		IndexType vSize= (*vIter)->vertex_bucket.size();
+		IndexType vSize= (IndexType)(*vIter)->vertex_bucket.size();
 		if (vSize < minSize)
 		{
 			minSize = vSize;
@@ -2038,13 +2042,13 @@ void GraphMatch::mergeTinyPatches(IndexType frameId, IndexType outlierSize)
 
 		IndexType i = 0;
 
-		IndexType tempSize = 1e5;
+		IndexType tempSize = (IndexType)1e5;
 
 		vector<IndexType> minAdj;
 
 		for (auto vIter = vtxBucket.begin(); vIter != vtxBucket.end(); ++vIter,++i)
 		{
-			IndexType vSize= (*vIter)->vertex_bucket.size();
+			IndexType vSize= (IndexType)(*vIter)->vertex_bucket.size();
 			if( vSize > outlierSize) continue;
 			mergeS.clear();
 
@@ -2052,24 +2056,24 @@ void GraphMatch::mergeTinyPatches(IndexType frameId, IndexType outlierSize)
 			VertexDescriptor nodeDec = *nodeIter;
 			auto adjIter = boost::adjacent_vertices(nodeDec,*curGraph);
 
-			mergeS.insert(*nodeIter);
+			mergeS.insert((IndexType)*nodeIter);
 
 			minAdj.clear();
-			for (; adjIter.first != adjIter.second; ++ adjIter.first)
+			for (; adjIter.first != adjIter.second; ++adjIter.first)
 			{
-				IndexType adjSize = vtxBucket[*(adjIter.first)]->vertex_bucket.size();	
+				IndexType adjSize = (IndexType)vtxBucket[*(adjIter.first)]->vertex_bucket.size();	
 				if (adjSize > vSize) //合并到小的块中
 				{
 					if (minAdj.empty())
 					{
-						minAdj.push_back(*(adjIter.first) );
+						minAdj.push_back((IndexType)*(adjIter.first) );
 					}else
 					{
 						auto adjB =minAdj.begin();
-						IndexType bSize = vtxBucket[*adjB]->vertex_bucket.size();
+						IndexType bSize = (IndexType)vtxBucket[*adjB]->vertex_bucket.size();
 						if (adjSize < bSize)
 						{
-							minAdj.insert(adjB,*(adjIter.first) );
+							minAdj.insert(adjB,(IndexType)*(adjIter.first) );
 						}
 					}
 				}
@@ -2078,7 +2082,7 @@ void GraphMatch::mergeTinyPatches(IndexType frameId, IndexType outlierSize)
 
 			if (!minAdj.empty())
 			{
-				mergeS.insert( *(minAdj.begin() ) );
+				mergeS.insert( (IndexType)*(minAdj.begin() ) );
 			}
 
 			if ( mergeS.size() > 1)
@@ -2092,17 +2096,17 @@ void GraphMatch::mergeTinyPatches(IndexType frameId, IndexType outlierSize)
 
 		//判断是否继续merge操作
 
-		gLevel = cur_frame.hier_graph.size();//合并最高层中的小块
+		gLevel = (IndexType)cur_frame.hier_graph.size();//合并最高层中的小块
 
 		--gLevel;
 
 		vtxBucket = cur_frame.hier_label_bucket[gLevel];
 
-		minSize = 1e5;
+		minSize = (IndexType)1e5;
 
 		for (auto vIter = vtxBucket.begin(); vIter != vtxBucket.end(); ++vIter)
 		{
-			IndexType vSize= (*vIter)->vertex_bucket.size();
+			IndexType vSize= (IndexType)(*vIter)->vertex_bucket.size();
 			if (vSize < minSize)
 			{
 				minSize = vSize;
