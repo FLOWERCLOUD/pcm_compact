@@ -236,7 +236,7 @@ void Sample::update()
 void Sample::delete_vertex_group(const std::vector<IndexType>& idx_grp )
 {
 	IndexType  i=0, j=0;
-	IndexType size = idx_grp.size();
+	IndexType size = (IndexType)idx_grp.size();
 	if (size==0)
 	{
 		return;

@@ -312,10 +312,10 @@ namespace nanoflann
 
 			/* Process 4 items with each loop for efficiency. */
 			while (a < lastgroup) {
-				const DistanceType diff0 = a[0] - data_source.kdtree_get_pt(b_idx,d++);
-				const DistanceType diff1 = a[1] - data_source.kdtree_get_pt(b_idx,d++);
-				const DistanceType diff2 = a[2] - data_source.kdtree_get_pt(b_idx,d++);
-				const DistanceType diff3 = a[3] - data_source.kdtree_get_pt(b_idx,d++);
+				const DistanceType diff0 = (DistanceType)(a[0] - data_source.kdtree_get_pt(b_idx,(int)d++) );
+				const DistanceType diff1 = (DistanceType)(a[1] - data_source.kdtree_get_pt(b_idx,(int)d++) );
+				const DistanceType diff2 = (DistanceType)(a[2] - data_source.kdtree_get_pt(b_idx,(int)d++) );
+				const DistanceType diff3 = (DistanceType)(a[3] - data_source.kdtree_get_pt(b_idx,(int)d++) );
 				result += diff0 * diff0 + diff1 * diff1 + diff2 * diff2 + diff3 * diff3;
 				a += 4;
 				if ((worst_dist>0)&&(result>worst_dist)) {
@@ -324,7 +324,7 @@ namespace nanoflann
 			}
 			/* Process last 0-3 components.  Not needed for standard vector lengths. */
 			while (a < last) {
-				const DistanceType diff0 = *a++ - data_source.kdtree_get_pt(b_idx,d++);
+				const DistanceType diff0 = *a++ - data_source.kdtree_get_pt(b_idx,(int)d++);
 				result += diff0 * diff0;
 			}
 			return result;
@@ -887,7 +887,7 @@ namespace nanoflann
 			freeIndex();
 			if(m_size == 0) return;
 			computeBoundingBox(root_bbox);
-			root_node = divideTree(0, m_size, root_bbox );   // construct the tree
+			root_node = divideTree(0, (int)m_size, root_bbox );   // construct the tree
 		}
 
 		/**
@@ -987,7 +987,7 @@ namespace nanoflann
 			// Create a permutable array of indices to the input vectors.
 			m_size = dataset.kdtree_get_point_count();
 			if (vind.size()!=m_size) vind.resize(m_size);
-			for (size_t i = 0; i < m_size; i++) vind[i] = i;
+			for (size_t i = 0; i < m_size; i++) vind[i] = (int)i;
 		}
 
 		/// Helper accessor to the dataset points:

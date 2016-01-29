@@ -30,8 +30,8 @@ public:
 
 		assert( theshold_<=1.0 && theshold_>0. );
 
-		IndexType num_lines = line_set_.size();
-		IndexType num_points = point_set_.size();
+		IndexType num_lines = (IndexType)line_set_.size();
+		IndexType num_points = (IndexType)point_set_.size();
 		IndexType step = num_points / smp_num;
 		IndexType n_d =  num_lines * smp_num;
 		P2LDistanceType*	d = new P2LDistanceType[ n_d ];

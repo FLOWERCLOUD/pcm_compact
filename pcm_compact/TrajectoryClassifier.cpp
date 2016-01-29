@@ -39,7 +39,7 @@ void TrajectoryClassifier::run()
 
 	//calculate motion models
 
-	IndexType modeNum = modelT * sampleCenterVtxId.size();
+	IndexType modeNum = (IndexType)(modelT * sampleCenterVtxId.size());
 	vector<IndexType> labels;
 	labels.resize(totalTraj.size(),0);
 
@@ -131,7 +131,7 @@ void TrajectoryClassifier::run()
 
 #endif
 
-		bubleSort(sampleCenterVtxId,labels,labels.size());
+		bubleSort(sampleCenterVtxId,labels,(IndexType)labels.size());
 
 		vector<IndexType> label_smooth(labels.size(),0);
 
@@ -210,7 +210,7 @@ void TrajectoryClassifier::run()
 		}
 
 		map<IndexType, IndexType> inter_labels;
-		IndexType trajSize = totalTraj.size();
+		IndexType trajSize = (IndexType)totalTraj.size();
 		for (IndexType tId = 0; tId < trajSize; tId ++) 
 		{
 			IndexType nodeId = 0;
@@ -243,7 +243,7 @@ void TrajectoryClassifier::run()
 
 		}
 
-		bubleSort(sampleCenterVtxId,order_labels,order_labels.size());
+		bubleSort(sampleCenterVtxId,order_labels,(IndexType)order_labels.size());
 		vector<IndexType> label_smooth(order_labels.size(),0);
 
 		diff_using_bfs(order_labels,sampleCenterVtxId,centerFrame); 
@@ -342,7 +342,7 @@ void TrajectoryClassifier::diff_using_bfs(std:: vector<IndexType>& labels,std::v
 		{
 			continue;
 		}
-		IndexType idx_set_size = idx_set.size();
+		IndexType idx_set_size = (IndexType)idx_set.size();
 		Matrix3X vtx_data;
 		vtx_data.setZero( 3, idx_set_size );
 		size_t i=0;
@@ -375,7 +375,7 @@ void TrajectoryClassifier::diff_using_bfs(std:: vector<IndexType>& labels,std::v
 			if(sep_label[i]==0)continue;
 			labels[*iter] = new_label + sep_label[i];
 		}
-		new_label += classifier.get_num_of_class()-1;
+		new_label += (IndexType)(classifier.get_num_of_class()-1);
 
 
 	}

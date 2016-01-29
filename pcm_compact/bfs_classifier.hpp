@@ -33,7 +33,7 @@ public:
 	{
 
 		assert( coord_.cols()!=0 );
-		neig_num_ = _nn<coord_.cols()?_nn:coord_.cols();
+		neig_num_ = _nn<(size_t)coord_.cols()?_nn:(size_t)coord_.cols();
 		label_ = new int[  coord_.cols() ];
 	}
 #endif
@@ -62,7 +62,7 @@ public:
 		std::queue<size_t> q;
 		visited[0] = true;
 		n_visited++;
-		label_[0] = kind_;
+		label_[0] = (int)kind_;
 		q.push( 0 );  //random seed
 
 		while (true)
@@ -99,7 +99,7 @@ public:
 					{
 						//not visited, and near enough to the current one
 						visited[ neigs[i] ] = true;
-						label_[ neigs[i] ] = kind_;
+						label_[ neigs[i] ] = (int)kind_;
 						n_visited++;
 						q.push( neigs[i] );
 					}
@@ -115,7 +115,7 @@ public:
 				for (start=0; visited[start] ; start++);
 				kind_++;
 				visited[ start ] = true;
-				label_[start] = kind_;
+				label_[start] = (int)kind_;
 				n_visited++;
 				q.push(start);
 			}

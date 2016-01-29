@@ -290,7 +290,7 @@ public:
 		 IndexType fNum = 0;
 		 IndexType bNum = 0;
 		 PointType transPoint;
-		 Eigen::Vector3f x_mean,y_mean;
+		 Eigen::Vector3d x_mean,y_mean;
 		 Matrix33 rotmate;
 		 rotmate.setIdentity();
 		 x_mean.setZero();
@@ -452,7 +452,7 @@ public:
 		IndexType fNum = 0;
 		IndexType bNum = 0;
 		PointType transPoint;
-		Eigen::Vector3f x_mean,y_mean;
+		Eigen::Vector3d x_mean,y_mean;
 		Matrix33 rotmate;
 		rotmate.setIdentity();
 		x_mean.setZero();
@@ -537,7 +537,7 @@ public:
 	ScalarType calcualteInnerProduct(MatrixXX & oriNorm,MatrixXX& newNorm)
 	{
 		ScalarType res = 0.0;
-		IndexType tot = oriNorm.cols();
+		IndexType tot = (IndexType)oriNorm.cols();
 		for (IndexType n_id = 0; n_id < tot; n_id +=3)
 		{
 			NormalType sNorm(oriNorm(0,n_id),oriNorm(0,n_id + 1),oriNorm(0,n_id + 2));

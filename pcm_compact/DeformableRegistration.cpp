@@ -1,6 +1,6 @@
 #include "DeformableRegistration.h"
 #include"sample_properity.h"
-
+#include "Eigen/Dense"
 using namespace std;
 
 
@@ -29,7 +29,7 @@ void DeformableRegistration::propagateLabel2Orignal(Sample& oriPC,vector<IndexTy
 	IndexType neighbours[k];
 	ScalarType dist[k];
 
-	IndexType vtx_num = oriPC.num_vertices();
+	IndexType vtx_num = (IndexType)oriPC.num_vertices();
 	IndexType result_label;
 
 
@@ -220,7 +220,7 @@ void DeformableRegistration::calculateDownSmpLifeSpanTrajCenter(vector<PCloudTra
 	}
 	if( end_idx > smp_set.size() - 1  )
 	{
-		end_idx = smp_set.size() - 1;
+		end_idx = (IndexType)smp_set.size() - 1;
 		start_idx = end_idx - length;
 	}
 
@@ -277,7 +277,7 @@ void DeformableRegistration::calculateDownSmpLifeSpanTrajCenter(vector<PCloudTra
 
 		srGraph->update();//back to original position after registeration
 
-		IndexType srGraphVtxN = srGraph->num_vertices();
+		IndexType srGraphVtxN = (IndexType)srGraph->num_vertices();
 
 		for ( int j = 0; j < srGraphVtxN; j++)
 		{
@@ -286,7 +286,7 @@ void DeformableRegistration::calculateDownSmpLifeSpanTrajCenter(vector<PCloudTra
 			vtx_cor = vtx_map[i + 1][global_vtx_map(0,j)];
 			isInValidIter = validEnd.find(vtx_map[i][j]);
 
-			ScalarType defValue = isDeformable(0,j);
+			ScalarType defValue = isDeformable(0,(__int64)j);
 
 			if (isInValidIter != validEnd.end())
 			{
@@ -294,7 +294,7 @@ void DeformableRegistration::calculateDownSmpLifeSpanTrajCenter(vector<PCloudTra
 				vector<PCloudTraj>::iterator v_iter =willGoOnTraj.begin();
 				for (; v_iter != willGoOnTraj.end();)
 				{
-					IndexType trajLife = (*v_iter).trajNode.size();	
+					IndexType trajLife = (IndexType)(*v_iter).trajNode.size();	
 					IndexType trajEndIndex = (*v_iter).trajNode[trajLife - 1];
 					IndexType endF = (*v_iter).trajLifeSpan.end;
 
@@ -425,7 +425,7 @@ void DeformableRegistration::calculateDownSmpLifeSpanTrajCenter(vector<PCloudTra
 
 		srGraph->update();//back to original position after registeration
 
-		IndexType srGraphVtxN = srGraph->num_vertices();
+		IndexType srGraphVtxN = (IndexType)srGraph->num_vertices();
 
 		for ( int j = 0; j < srGraphVtxN; j++)
 		{
@@ -434,7 +434,7 @@ void DeformableRegistration::calculateDownSmpLifeSpanTrajCenter(vector<PCloudTra
 			vtx_cor = vtx_map[i - 1][global_vtx_map(0,j)];
 			isInValidIter = validEnd.find(vtx_map[i][j]);
 
-			ScalarType defValue = isDeformable(0,j);
+			ScalarType defValue = isDeformable(0,(__int64)j);
 
 
 			if (isInValidIter != validEnd.end())
@@ -575,7 +575,7 @@ void DeformableRegistration::calculateFixedLengthTrajWithTracingAlong(vector<PCl
 
 	{
 
-		end_idx = smp_set.size() - 1;
+		end_idx = (IndexType)smp_set.size() - 1;
 
 		start_idx = end_idx - length;
 
@@ -755,7 +755,7 @@ PCloudAffModel DeformableRegistration::constrcutAffineMotionMode(vector<PCloudTr
 	pModel.modelLifeSpan = comTime;
 
 
-	Eigen::Vector3f mean;
+	Eigen::Vector3d mean;
 	Matrix34 f_transf;
 	Matrix34 b_transf;
 	Matrix3X srPoints;
@@ -848,16 +848,19 @@ bool DeformableRegistration::sample3validTraj(vector<PCloudTraj> & totTraj,vecto
 void DeformableRegistration::non_rigidRegister(Sample& srGraph,Sample& tgGraph,MatrixXXi & vtxMap,
 	MatrixXX &isDeformable,std::set<IndexType> & distLrgIndex)
 {
-	IndexType num_vtx = srGraph.num_vertices();
+	IndexType num_vtx = (IndexType)srGraph.num_vertices();
 	Matrix3X resPosition;
-	isDeformable.setZero(1,num_vtx);
+	isDeformable.setZero(1,(__int64)num_vtx);
 	resPosition.setZero(3,num_vtx);
 	vtxMap.setZero(1,num_vtx);
 
 	//do  global ICP
-	SICP::Parameters pa(false,2.0,10,1.2,1e5,100,100,1,1e-5); //release
+	SICP::Parameters pa(false,2.0f,10,1.2f,1e5,100,100,1,0.00001f); //release
 	//SICP::Parameters pa(false,2.0,10,1.2,1e5,20,20,1,1e-5);     //debug  
-	SICP::point_to_point(srGraph.vertices_matrix(),tgGraph.vertices_matrix(),vtxMap,pa);
+	Eigen::Matrix3Xf srgMatrix,tgMatrix ;
+	srgMatrix = srGraph.vertices_matrix().cast<float>();
+	tgMatrix = tgGraph.vertices_matrix().cast<float>();
+	SICP::point_to_point(srgMatrix ,tgMatrix,vtxMap,pa);
 	srGraph.update();//为了查找点的邻域，需要更新
 
 	//local ICP and mix coordinate with rest  and correspondence position
@@ -873,7 +876,7 @@ void DeformableRegistration::non_rigidRegister(Sample& srGraph,Sample& tgGraph,M
 	}
 }
 
-//---------------------------
+
 bool DeformableRegistration::sampleValidTraj(vector<PCloudTraj> & totTraj,vector<PCloudTraj>& resTraj,LifeSpan & lifesp,IndexType num)
 {
 	assert(num > 3);
@@ -897,7 +900,7 @@ PCloudModel DeformableRegistration::constrcutRigidMotionMode(vector<PCloudTraj> 
 	pModel.modeLifeSpan = comTime;
 	pModel.Centers.setZero(3,totFrame);
 
-	Eigen::Vector3f mean;
+	Eigen::Vector3d mean;
 	Matrix33 f_rotmate;
 	Matrix33 b_rotmate;
 	Matrix3X srPoints;
@@ -945,7 +948,7 @@ void DeformableRegistration::calculateAffineTrans(Matrix3X& srCoor, Matrix3X& tg
 
 	MatrixXX tgOriCoor = tgCoor;
 
-	IndexType pSzie = srCoor.cols();
+	IndexType pSzie = (IndexType)srCoor.cols();
 	MatrixXX rA;
 
 	rA.setOnes(4,pSzie);
@@ -956,17 +959,18 @@ void DeformableRegistration::calculateAffineTrans(Matrix3X& srCoor, Matrix3X& tg
 
 
 	//MatrixXX res = rAT.ldlt().solve(tgOriCoor.transpose() );
-	MatrixXX res = rAT.fullPivHouseholderQr().solve(tgOriCoor.transpose() );
+	MatrixXX tmp = tgOriCoor.transpose().cast<ScalarType>(); 
+	MatrixXX res = rAT.fullPivHouseholderQr().solve(tmp);
 
 	affineMat = res.transpose();
 }
-
+////
 void DeformableRegistration::getMultiTrajNodeCoordinate(vector<PCloudTraj>& multiTraj,IndexType frameId,Matrix3X &resCoorMat)
 {//获取不同轨迹在同一帧的顶点坐标<假设它们有共同的life-time>
 
 	//assert(each trajectory have the common instance of frameId)
 
-	IndexType trajNum = multiTraj.size();
+	IndexType trajNum = (IndexType)multiTraj.size();
 	resCoorMat.setZero(3,trajNum);
 	PointType tempPoint;
 	for (IndexType trajIndex = 0; trajIndex < trajNum; trajIndex ++)
@@ -975,7 +979,7 @@ void DeformableRegistration::getMultiTrajNodeCoordinate(vector<PCloudTraj>& mult
 		resCoorMat.col(trajIndex) = tempPoint;
 	}
 }
-
+//
 void DeformableRegistration::calculateNormalRotMat(NormalType& sN,PointType& tN,Matrix33& rotMat)
 {
 	ScalarType sL,sA,tL,tA;
@@ -1035,9 +1039,9 @@ void DeformableRegistration::calculateNormalRotMat(NormalType& sN,PointType& tN,
 
 bool DeformableRegistration::getCommonTime(vector<PCloudTraj> & eleTraj,LifeSpan & lifesp)
 {
-	IndexType lifeStart = 0;
-	IndexType lifeEnd   = 1e5;
-	IndexType trajSize = eleTraj.size();
+	IndexType lifeStart = (IndexType)0;
+	IndexType lifeEnd   = (IndexType)1e5;
+	IndexType trajSize = (IndexType)eleTraj.size();
 	PCloudTraj temp;
 	for (IndexType trajId = 0; trajId < trajSize; trajId ++)
 	{
@@ -1063,10 +1067,10 @@ bool DeformableRegistration::getCommonTime(vector<PCloudTraj> & eleTraj,LifeSpan
 		return false;
 	}
 }
-
+//
 void DeformableRegistration::combinationCoor(ScalarType stiffCoff,Sample & srGraph,Sample & trGraph,Matrix3X & restPos,MatrixXXi& vtx_cor)
 {
-	IndexType	num_vtx	= srGraph.num_vertices();
+	IndexType	num_vtx	= (IndexType)srGraph.num_vertices();
 	PointType temp ;
 	temp.setZero();
 	for (IndexType v_it = 0; v_it < num_vtx; v_it++)
@@ -1075,10 +1079,10 @@ void DeformableRegistration::combinationCoor(ScalarType stiffCoff,Sample & srGra
 		srGraph.vertices_matrix().col(v_it) = temp;
 	}
 }
-
+//
 void DeformableRegistration::optimizeCoor(Sample&srGraph,Sample&tgGraph,MatrixXXi & res_cor)
 {
-	IndexType	num_vtx	= srGraph.num_vertices();
+	IndexType	num_vtx	= (IndexType)srGraph.num_vertices();
 	Matrix3X    distance(3,num_vtx);
 	ScalarType  total_dis = 0.0;
 
@@ -1121,10 +1125,10 @@ void DeformableRegistration::optimizeCoor(Sample&srGraph,Sample&tgGraph,MatrixXX
 		if (total_dis > criterion) break;	//???	
 	}
 }
-
+//
 void DeformableRegistration::localICPDisto(Sample & srGraph,Sample& tgGraph,MatrixXXi & vtx_cor, Matrix3X& restPos,MatrixXX& isDeformable)
 {
-	IndexType num_vtx = srGraph.num_vertices();
+	IndexType num_vtx = (IndexType)srGraph.num_vertices();
 	IndexType * neigSrGraph = new IndexType[m_neigNum];
 	IndexType * neigTgGraph = new IndexType[m_neigNum];
 	Matrix3X neigSrCoor(3,m_neigNum);
@@ -1137,7 +1141,7 @@ void DeformableRegistration::localICPDisto(Sample & srGraph,Sample& tgGraph,Matr
 	resNeigDis.setZero(m_neigNum,1);
 
 	//loacl ICP 
-	SICP::Parameters pa(false,2,10,1.2,1e5,20,20,1,1e-5);
+	SICP::Parameters pa(false,2,10,1.2f,1e5,20,20,1,1e-5f);
 	MatrixXXi localCor;
 	localCor.setZero(1,m_neigNum);
 
@@ -1155,8 +1159,10 @@ void DeformableRegistration::localICPDisto(Sample & srGraph,Sample& tgGraph,Matr
 		calculateNeigDis(neigSrCoor,neigDis);//calculate the ori distance around the v_idx 为了计算扭曲量用到的距离
 
 		OrineigSrCoor = neigSrCoor;
-
-		SICP::point_w_point(neigSrCoor,neigTgCoor,localCor,pa);
+		Eigen::Matrix3Xf neigSrMatrix ,neigTgMatrix;
+		neigSrMatrix = neigSrCoor.cast<float>();
+		neigTgMatrix = neigTgCoor.cast<float>();
+		SICP::point_w_point(neigSrMatrix,neigTgMatrix,localCor,pa);
 
 		restPos.col(v_idx) = neigSrCoor.col(0);//record the res position(rigid ICP)
 		vtx_cor(0,v_idx) = neigTgGraph[localCor(0,0)];//update the correspondence of v_idx in tgGraph
@@ -1168,18 +1174,18 @@ void DeformableRegistration::localICPDisto(Sample & srGraph,Sample& tgGraph,Matr
 		//calculateNeigDis(neigTgCoor,resNeigDis);
 		//isDeformable(0,v_idx) = deformableValue(neigDis,resNeigDis);//
 
-		isDeformable(0,v_idx) = deformableTotal(OrineigSrCoor,neigTgCoor);
+		isDeformable(0,(__int64)v_idx) = deformableTotal(OrineigSrCoor,neigTgCoor);
 	}
 
 	delete []neigSrGraph;
 	delete []neigTgGraph;	
 }
-
+//
 void DeformableRegistration::combinationCoor(ScalarType stiffCoff,Sample & srGraph,Sample & trGraph,
 	Matrix3X & restPos,MatrixXXi& vtx_cor,MatrixXX& isDeformable,std::set<IndexType> & distLrgIndex)
 {
 	ScalarType threshold = 0.2;
-	IndexType	num_vtx	= srGraph.num_vertices();
+	IndexType	num_vtx	= (IndexType)srGraph.num_vertices();
 	//IndexType recordDistortionNum05 = 0;
 	PointType temp ;
 	temp.setZero();
@@ -1194,7 +1200,7 @@ void DeformableRegistration::combinationCoor(ScalarType stiffCoff,Sample & srGra
 	// 		}
 	for (IndexType v_it = 0; v_it < num_vtx; v_it++)
 	{
-		if (isDeformable(0,v_it) < threshold)
+		if (isDeformable(0,(__int64)v_it) < threshold)
 		{
 			temp = stiffCoff * restPos.col(v_it) + (1- stiffCoff) * trGraph.vertices_matrix().col(vtx_cor(0,v_it));
 			srGraph.vertices_matrix().col(v_it) = temp;
@@ -1211,22 +1217,22 @@ void DeformableRegistration::combinationCoor(ScalarType stiffCoff,Sample & srGra
 	// 	op.close();
 	//	Logger<<"out of distortion number = "<<recordDistortionNum05<<endl;
 }
-
+//
 void DeformableRegistration::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 & rotMat)
 {
-	Eigen::Vector3f X_mean, Y_mean;
+	Eigen::Vector3d X_mean, Y_mean;
 	for(int i=0; i<3; ++i) //计算两点云的均值
 	{
-		X_mean(i) = srCloud.row(i).sum()/srCloud.cols();
-		Y_mean(i) = tgCloud.row(i).sum()/tgCloud.cols();
+		X_mean(i) = (ScalarType)srCloud.row(i).sum()/srCloud.cols();
+		Y_mean(i) = (ScalarType)tgCloud.row(i).sum()/tgCloud.cols();
 	}
 
 	srCloud.colwise() -= X_mean;
 	tgCloud.colwise() -= Y_mean;
 
-	/// Compute transformation
+	 //Compute transformation
 	Eigen::Affine3f transformation;
-	Eigen::Matrix3f sigma = srCloud * tgCloud.transpose();
+	Eigen::Matrix3f sigma = (srCloud * tgCloud.transpose()).cast<float>();
 	Eigen::JacobiSVD<Eigen::Matrix3f> svd(sigma, Eigen::ComputeFullU | Eigen::ComputeFullV);
 	if(svd.matrixU().determinant()*svd.matrixV().determinant() < 0.0)//contains reflection
 	{
@@ -1237,13 +1243,13 @@ void DeformableRegistration::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,M
 		transformation.linear().noalias() = svd.matrixV()*svd.matrixU().transpose();//计算旋转矩阵
 	}
 	//transformation.translation().noalias() = Y_mean - transformation.linear()*X_mean;//计算平移向量
-	rotMat = transformation.linear() ;
+	rotMat = transformation.linear().cast<ScalarType>() ;
 
 	srCloud.colwise() += X_mean;
 	tgCloud.colwise() += Y_mean;
 }
-
-void DeformableRegistration::calculateCenter(Matrix3X& oriCoordinate,Eigen::Vector3f& mean)
+//
+void DeformableRegistration::calculateCenter(Matrix3X& oriCoordinate,Eigen::Vector3d& mean)
 {
 	assert(oriCoordinate.cols() > 0);
 	for(int i=0; i<3; ++i) //calculate center
@@ -1264,7 +1270,7 @@ void DeformableRegistration::getTrajNodeCoordinate(PCloudTraj & traj,IndexType f
 		Logger<<" index out of range.\n";
 	}
 }
-
+//
 IndexType DeformableRegistration::findMinCorr(PointType & srPoint,Vec3& mean, int * neigIndex,Sample & smp)
 {
 	PointType tgPoint;
@@ -1284,7 +1290,7 @@ IndexType DeformableRegistration::findMinCorr(PointType & srPoint,Vec3& mean, in
 
 	return minIndex;
 }
-
+//
 ScalarType DeformableRegistration::avgDistancePoint(IndexType pointIndex,Sample & smp,IndexType neigNum,Matrix3X & dst,Vec3 & mean)
 {
 	assert(neigNum > 0);
@@ -1305,11 +1311,11 @@ ScalarType DeformableRegistration::avgDistancePoint(IndexType pointIndex,Sample 
 
 	return (ori_point - mean).squaredNorm();
 }
-
+//
 ScalarType DeformableRegistration::totalDistance(Sample &smp,IndexType neigNum,Matrix3X & dst)
 {
 	ScalarType tot_dis = 0.0;
-	IndexType vtx_num = dst.cols();
+	IndexType vtx_num = (IndexType)dst.cols();
 	Vec3 mean_;
 	for (IndexType v_idx = 0; v_idx < vtx_num; v_idx++)
 	{
@@ -1317,11 +1323,11 @@ ScalarType DeformableRegistration::totalDistance(Sample &smp,IndexType neigNum,M
 	}
 	return tot_dis;
 }
-
+//
 ScalarType DeformableRegistration::deformableTotal(Matrix3X& srCoor, Matrix3X& tgCoor)
 {
 	ScalarType distor = 0.0;
-	IndexType pSize = srCoor.cols();
+	IndexType pSize = (IndexType)srCoor.cols();
 	IndexType itTime = 0;
 	for (IndexType i = 0; i < pSize - 1; i++ )
 	{
@@ -1344,20 +1350,20 @@ ScalarType DeformableRegistration::deformableTotal(Matrix3X& srCoor, Matrix3X& t
 
 	return distor;
 }
-
+//
 void DeformableRegistration::alignTargetCoor(Matrix3X & tgCloud,MatrixXXi & vertexMap)
 {
 	MatrixXX temp = tgCloud;
-	int verN = temp.cols();
+	int verN = (int)temp.cols();
 	for (int i = 0; i < verN; i++)
 	{
 		tgCloud.col(i) = temp.col(vertexMap(0,i));
 	}
 }
-
+//
 void DeformableRegistration::calculateNeigDis(Matrix3X & neigCoor,VecX& resDis)
 {
-	IndexType vtx_num = neigCoor.cols();
+	IndexType vtx_num = (IndexType)neigCoor.cols();
 	PointType ori = neigCoor.col(0);
 	PointType diff;
 	diff.setZero();
@@ -1367,7 +1373,7 @@ void DeformableRegistration::calculateNeigDis(Matrix3X & neigCoor,VecX& resDis)
 		resDis(vtx_iter,0) = diff.norm();
 	}
 }
-
+//
 void DeformableRegistration::getConstantNeigCoorByIndex(Sample & smp,IndexType * neigIndex,Matrix3X & res_coor)
 {
 	for (IndexType v_it = 0; v_it < m_neigNum;v_it++)

@@ -133,12 +133,12 @@ void GCop::refineSegm()
 	char input_label_file[2048];
 	char input_cor_file[2048];
 
-	sprintf(input_label_file,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\res-0.50\\J-0.50-splitMerge\\cosegOOrder%.2d.txt",m_centerF); //in order to smoothig after coseg,2015-12-05
-	sprintf(input_cor_file,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\res-0.50\\hksingle_corr%.2d_0.50.txt",m_centerF);
+	sprintf_s(input_label_file,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\res-0.50\\J-0.50-splitMerge\\cosegOOrder%.2d.txt",m_centerF); //in order to smoothig after coseg,2015-12-05
+	sprintf_s(input_cor_file,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\res-0.50\\hksingle_corr%.2d_0.50.txt",m_centerF);
 
 	m_nLabels = gcNode->readnLabelFile(input_label_file);
 	gcNode->read_corres_file(input_cor_file); 
-	IndexType nodeNum = gcNode->node_vec.size();
+	IndexType nodeNum = (IndexType)gcNode->node_vec.size();
 	m_gc = new GCoptimizationGeneralGraph(nodeNum,m_nLabels,gcNode);
 
 	setNeighborSmpTree(); 

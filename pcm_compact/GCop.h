@@ -17,7 +17,7 @@
 
 #define EXPSWAP 
 class GraphNodeCtr;
-class GraphCutNode;
+struct GraphCutNode;
 class DualwayPropagation;
 class GCoptimizationGeneralGraph ;
 class Sample;

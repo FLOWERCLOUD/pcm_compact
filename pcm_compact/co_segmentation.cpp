@@ -324,97 +324,97 @@ void CoSegmentation::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 
 
 }
 //
-//IndexType CoSegmentation::compute_common_back(Component & c1, Component & c2, map<IndexType,IndexType> & common_part )
-//{
-//	IndexType count = 0;
-//	for ( map<IndexType,IndexType>::iterator iter = c2.vtx_corr_prev_frame.begin();
-//		iter != c2.vtx_corr_prev_frame.end(); iter++)
-//	{
-//		if( c1.vtx_corr_next_frame.find( iter->second )!=c1.vtx_corr_next_frame.end() )
-//		{
-//			count++;
-//			common_part.insert( *iter );
-//		}
-//	}
-//	return count;
-//}
+IndexType CoSegmentation::compute_common_back(Component & c1, Component & c2, map<IndexType,IndexType> & common_part )
+{
+	IndexType count = 0;
+	for ( map<IndexType,IndexType>::iterator iter = c2.vtx_corr_prev_frame.begin();
+		iter != c2.vtx_corr_prev_frame.end(); iter++)
+	{
+		if( c1.vtx_corr_next_frame.find( iter->second )!=c1.vtx_corr_next_frame.end() )
+		{
+			count++;
+			common_part.insert( *iter );
+		}
+	}
+	return count;
+}
 //
-//IndexType CoSegmentation::compute_common( Component & c1, Component & c2, map<IndexType,IndexType> & common_part )
-//{
-//	IndexType count = 0;
-//	for ( map<IndexType,IndexType>::iterator iter = c1.vtx_corr_next_frame.begin();
-//		iter != c1.vtx_corr_next_frame.end(); iter++)
-//	{
-//		if( c2.vtx_corr_next_frame.find( iter->second )!=c2.vtx_corr_next_frame.end() )
-//		{
-//			count++;
-//			common_part.insert( *iter );
-//		}
-//	}
-//	return count;
-//}
+IndexType CoSegmentation::compute_common( Component & c1, Component & c2, map<IndexType,IndexType> & common_part )
+{
+	IndexType count = 0;
+	for ( map<IndexType,IndexType>::iterator iter = c1.vtx_corr_next_frame.begin();
+		iter != c1.vtx_corr_next_frame.end(); iter++)
+	{
+		if( c2.vtx_corr_next_frame.find( iter->second )!=c2.vtx_corr_next_frame.end() )
+		{
+			count++;
+			common_part.insert( *iter );
+		}
+	}
+	return count;
+}
 //
-//void CoSegmentation::hierComponets2Components()
-//{
-//	//把hier_component最上层的数据赋值给Components
-//
-//	assert(!hier_componets->empty() );
-//
-//	if (!components_.empty() )
-//	{
-//		components_.clear();
-//	}
-//
-//	for (auto fIter = hier_componets->begin(); fIter != hier_componets->end(); ++ fIter)
-//	{
-//		IndexType gLevel = fIter->second.hier_label_bucket.size();//访问最高层的label_bucket
-//
-//		IndexType fId = fIter->first;
-//
-//		vector<HLabel*>& label_buctet = fIter->second.hier_label_bucket[gLevel - 1];
-//
-//		IndexType compo_idx;
-//
-//		for (auto lIter = label_buctet.begin(); lIter != label_buctet.end(); ++ lIter)
-//		{
-//
-//			IndexType pId = (*lIter)->label_id;
-//
-//			map<IndexType,HVertex*>& vtx_bucket = (*lIter)->vertex_bucket;
-//
-//			compo_idx = components_.size();
-//
-//			components_.push_back( Component(fId, pId) );
-//
-//			for (auto vIt = vtx_bucket.begin(); vIt != vtx_bucket.end(); ++vIt)
-//			{
-//				IndexType vtx_id = vIt->first;
-//
-//				HVertex* vtx = vIt->second;
-//
-//				if (vtx->prev_corr != NULL)
-//				{
-//					IndexType prevId = vtx->prev_corr->vtx_id;
-//
-//					components_[compo_idx].vtx_corr_prev_frame.insert(make_pair(vtx_id,prevId) );
-//				}else
-//				{
-//					components_[compo_idx].vtx_corr_prev_frame.insert(make_pair(vtx_id, -1) );
-//				}
-//
-//				if (vtx->next_corr != NULL)
-//				{
-//					IndexType nextId = vtx->next_corr->vtx_id;
-//
-//					components_[compo_idx].vtx_corr_next_frame.insert(make_pair(vtx_id, nextId) );
-//
-//				}else
-//				{
-//					components_[compo_idx].vtx_corr_next_frame.insert(make_pair(vtx_id, -1) );
-//				}
-//
-//			}
-//		}
-//	}
-//
-//}
+void CoSegmentation::hierComponets2Components()
+{
+	//把hier_component最上层的数据赋值给Components
+
+	assert(!hier_componets->empty() );
+
+	if (!components_.empty() )
+	{
+		components_.clear();
+	}
+
+	for (auto fIter = hier_componets->begin(); fIter != hier_componets->end(); ++ fIter)
+	{
+		IndexType gLevel = (IndexType)fIter->second.hier_label_bucket.size();//访问最高层的label_bucket
+
+		IndexType fId = fIter->first;
+
+		vector<HLabel*>& label_buctet = fIter->second.hier_label_bucket[gLevel - 1];
+
+		IndexType compo_idx;
+
+		for (auto lIter = label_buctet.begin(); lIter != label_buctet.end(); ++ lIter)
+		{
+
+			IndexType pId = (*lIter)->label_id;
+
+			map<IndexType,HVertex*>& vtx_bucket = (*lIter)->vertex_bucket;
+
+			compo_idx = (IndexType)components_.size();
+
+			components_.push_back( Component(fId, pId) );
+
+			for (auto vIt = vtx_bucket.begin(); vIt != vtx_bucket.end(); ++vIt)
+			{
+				IndexType vtx_id = vIt->first;
+
+				HVertex* vtx = vIt->second;
+
+				if (vtx->prev_corr != NULL)
+				{
+					IndexType prevId = vtx->prev_corr->vtx_id;
+
+					components_[compo_idx].vtx_corr_prev_frame.insert(make_pair(vtx_id,prevId) );
+				}else
+				{
+					components_[compo_idx].vtx_corr_prev_frame.insert(make_pair(vtx_id, -1) );
+				}
+
+				if (vtx->next_corr != NULL)
+				{
+					IndexType nextId = vtx->next_corr->vtx_id;
+
+					components_[compo_idx].vtx_corr_next_frame.insert(make_pair(vtx_id, nextId) );
+
+				}else
+				{
+					components_[compo_idx].vtx_corr_next_frame.insert(make_pair(vtx_id, -1) );
+				}
+
+			}
+		}
+	}
+
+}

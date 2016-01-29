@@ -1775,7 +1775,7 @@ GCoptimization::EnergyTermType GCoptimizationGeneralGraph::dataCostFn::compute(S
 	////累计轨迹之间的误差
 	IndexType pId = node->index;
 	PointType tPoint = curF.vertices_matrix().col(pId);
-	IndexType trajLen = node->cor_frame_index.size();
+	IndexType trajLen = (IndexType)node->cor_frame_index.size();
 	assert(trajLen > 0);
 	IndexType startF = fId - trajLen/2;
 	IndexType itframe = 0;
@@ -1803,7 +1803,7 @@ GCoptimization::EnergyTermType GCoptimizationGeneralGraph::dataCostFn::compute(S
 	}
 
 	//Logger<<"data error = "<<errMean/trajLen<<endl;
-	return errMean/trajLen;
+	return (EnergyTermType)errMean/trajLen;
 
 
 
@@ -1917,7 +1917,7 @@ GCoptimization::EnergyTermType GCoptimizationGeneralGraph::dataCostFn::compute(S
 	auto ev = eigen_solver.eigenvectors();
 	auto eval = eigen_solver.eigenvalues();
 	ScalarType tmp[3] = { eval(0).real(),eval(1).real(),eval(2).real() };
-	IndexType min_idx = std::min_element(tmp,tmp+3) - tmp;
+	IndexType min_idx = (IndexType)(std::min_element(tmp,tmp+3) - tmp);
 
 	ScalarType deno = tmp[0] + tmp[1] + tmp[2];
 
@@ -1942,7 +1942,7 @@ GCoptimization::EnergyTermType GCoptimizationGeneralGraph::smoothCostFn::compute
 {
 	if (l1==l2)
 	{
-		return 0.0;
+		return (EnergyTermType)0.0;
 
 	}else//两者已经在邻域之中，寻找到关节部分,dist ∈(0,1)，最终的边权值应该为正。
 	{
@@ -1960,7 +1960,7 @@ GCoptimization::EnergyTermType GCoptimizationGeneralGraph::smoothCostFn::compute
 		//Logger<<"cur's weight = "<<cur*m_nSmoothWeight<<endl;
 		//ScalarType cur = 0.5;
 
-	    return   m_nSmoothWeight * cur;
+	    return   (EnergyTermType)(m_nSmoothWeight * cur);
 	}
 
 }
@@ -2345,7 +2345,7 @@ ScalarType GCoptimizationGeneralGraph::smoothCostFn::curvatureNode(IndexType fra
 	auto ev = eigen_solver.eigenvectors();
 	auto eval = eigen_solver.eigenvalues();
 	ScalarType tmp[3] = { eval(0).real(),eval(1).real(),eval(2).real() };
-	IndexType min_idx = std::min_element(tmp,tmp+3) - tmp;
+	IndexType min_idx = (IndexType)(std::min_element(tmp,tmp+3) - tmp);
 
 	if (min_idx == 0)
 	{
@@ -2409,7 +2409,7 @@ ScalarType GCoptimizationGeneralGraph::smoothCostFn::rationCurNode(IndexType fra
 	auto ev = eigen_solver.eigenvectors();
 	auto eval = eigen_solver.eigenvalues();
 	ScalarType tmp[3] = { eval(0).real(),eval(1).real(),eval(2).real() };
-	IndexType min_idx = std::min_element(tmp,tmp+3) - tmp;
+	IndexType min_idx = (IndexType)(std::min_element(tmp,tmp+3) - tmp);
 
 	//Logger<<"three eigenvalue = "<<tmp[0]<<" "<<tmp[1]<<" "<<tmp[2]<<endl;
 	ScalarType deno = tmp[0] + tmp[1] + tmp[2];
@@ -2477,7 +2477,7 @@ ScalarType GCoptimizationGeneralGraph::smoothCostFn::curPairSmooth(IndexType fra
 	auto ev = eigen_solver.eigenvectors();
 	auto eval = eigen_solver.eigenvalues();
 	ScalarType tmp[3] = { eval(0).real(),eval(1).real(),eval(2).real() };
-	IndexType min_idx = std::min_element(tmp,tmp+3) - tmp;
+	IndexType min_idx = (IndexType)(std::min_element(tmp,tmp+3) - tmp);
 	NormalType nv; 
 	nv(0) = (ev.col(min_idx))(0).real();
 	nv(1) = (ev.col(min_idx))(1).real();

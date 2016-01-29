@@ -31,7 +31,7 @@ namespace nanoflann {
         index_t* index;
         KDTreeAdaptor(const MatrixType &mat, const int leaf_max_size = 10) : m_data_matrix(mat) {
             const size_t dims = mat.rows();
-            index = new index_t( dims, *this, nanoflann::KDTreeSingleIndexAdaptorParams(leaf_max_size, dims ) );
+            index = new index_t( (int)dims, *this, nanoflann::KDTreeSingleIndexAdaptorParams(leaf_max_size, (int)dims ) );
             index->buildIndex();
         }
         ~KDTreeAdaptor() {delete index;}
@@ -272,7 +272,7 @@ namespace SICP {
         Parameters() : use_penalty(false),
                        p(2.0),
                        mu(10.0),
-                       alpha(1.2),
+                       alpha(1.2f),
                        max_mu(1e5),
                        max_icp(100),
                        max_outer(100),
@@ -314,13 +314,13 @@ namespace SICP {
     /// 3D Shrinkage for point-to-point
     template<unsigned int I>
     inline void shrink(Eigen::Matrix3Xf& Q, float mu, float p) {
-        float Ba = std::pow((float)(2.0/mu)*(1.0-p), 1.0/(2.0-p));
-        float ha = Ba + (p/mu)*(double)std::pow((double)Ba, (double)(p-1.0) );
+        float Ba = (float)std::pow((float)(2.0/mu)*(1.0-p), 1.0/(2.0-p));
+        float ha = (float)( Ba + (p/mu)*(double)std::pow((double)Ba, (double)(p-1.0) ) );
         #pragma omp parallel for
         for(int i=0; i<Q.cols(); ++i) {
             float n = Q.col(i).norm();
             float w = 0.0;
-            if(n > ha) w = shrinkage<I>(mu, n, p, (Ba/n + 1.0)/2.0);
+            if(n > ha) w = shrinkage<I>(mu, n, p, (float) ((Ba/n + 1.0)/2.0));
             Q.col(i) *= w;
         }
     }

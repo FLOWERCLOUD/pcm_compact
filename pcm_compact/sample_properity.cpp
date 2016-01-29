@@ -43,7 +43,7 @@ void compute_normal( IndexType selected_smp,  NormalType& baseline )
 		auto ev = eigen_solver.eigenvectors();
 		auto eval = eigen_solver.eigenvalues();
 		ScalarType tmp[3] = { eval(0).real(),eval(1).real(),eval(2).real() };
-		IndexType min_idx = std::min_element(tmp,tmp+3) - tmp;
+		IndexType min_idx = IndexType(std::min_element(tmp,tmp+3) - tmp);
 		NormalType nv; 
 		nv(0) = (ev.col(min_idx))(0).real();
 		nv(1) = (ev.col(min_idx))(1).real();
@@ -120,7 +120,7 @@ void compute_normal( IndexType selected_smp,  NormalType& baseline )
  		auto ev = eigen_solver.eigenvectors();
  		auto eval = eigen_solver.eigenvalues();
  		ScalarType tmp[3] = { eval(0).real(),eval(1).real(),eval(2).real() };
- 		IndexType min_idx = std::min_element(tmp,tmp+3) - tmp;
+ 		IndexType min_idx = (IndexType)(std::min_element(tmp,tmp+3) - tmp);
  
  		///calculate curvature
  		ScalarType K = 0.;
@@ -240,7 +240,7 @@ void SubSampleSolution::build_subSample( vector<vector<IndexType> >& groups, vec
 		{
 			center_point += point_inside_group[i];
 		}
-		center_point = center_point/point_inside_group.size();
+		center_point = (PointType)(center_point/(ScalarType)point_inside_group.size());
 		IndexType idx_nearest_center_in_group=0;
 		ScalarType min_dist = l2_distance( point_inside_group[0], center_point );
 		for( int i=1; i<point_inside_group.size(); ++i )

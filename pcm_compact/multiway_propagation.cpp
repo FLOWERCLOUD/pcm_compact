@@ -10,7 +10,7 @@ void DualwayPropagation::constructPCloudGraph()
 	for (auto citer = hier_componets_.begin(); citer!=hier_componets_.end(); citer++)
 	{
 
-		IndexType nodeSize = citer->second.label_of_vtx.size();//.size();
+		IndexType nodeSize = (IndexType)citer->second.label_of_vtx.size();//.size();
 
 		PCloudGraph* new_pcGraph_space = allocator_.allocate<PCloudGraph>();
 
@@ -29,7 +29,7 @@ void DualwayPropagation::constructPCloudGraph()
 
 void DualwayPropagation::addGraphVertex(PCloudGraph& pcGraph, IndexType frameId)
 {
-	IndexType nSize = hier_componets_[frameId].label_of_vtx.size();
+	IndexType nSize = (IndexType)hier_componets_[frameId].label_of_vtx.size();
 
 	auto vIter = hier_componets_[frameId].label_of_vtx.begin();
 	auto vEnd = hier_componets_[frameId].label_of_vtx.end();
@@ -70,9 +70,9 @@ void DualwayPropagation::init_labeles_graph_hier(ScalarType distThr)
 	for (auto citer = hier_componets_.begin(); citer!=hier_componets_.end(); citer++)
 	{
 
-		IndexType lbsize = citer->second.hier_label_bucket.size();
+		IndexType lbsize = (IndexType)citer->second.hier_label_bucket.size();
 		assert( lbsize > 0);
-		IndexType nodeSize = citer->second.hier_label_bucket[lbsize -1].size();//.size();
+		IndexType nodeSize = (IndexType)citer->second.hier_label_bucket[lbsize -1].size();//.size();
 
 		LabelsGraph* new_labelGraph_space = allocator_.allocate<LabelsGraph>();
 
@@ -362,7 +362,7 @@ void DualwayPropagation::wirteSplitGraphLables(std::string filename)
 
 	for (auto fIter = hier_componets_.begin(); fIter != hier_componets_.end(); fIter ++)
 	{
-		IndexType gLevel = fIter->second.hier_label_bucket.size();//访问最高层的label_bucket
+		IndexType gLevel = (IndexType)fIter->second.hier_label_bucket.size();//访问最高层的label_bucket
 		IndexType fId = fIter->first;
 		vector<HLabel*>& label_buctet = fIter->second.hier_label_bucket[gLevel - 1];
 
@@ -387,7 +387,7 @@ void DualwayPropagation::wirteSplitGraphLables(std::string filename)
 
 void DualwayPropagation::splitAllSquenceGraph(IndexType iterN)
 {
-	IndexType fSize = hier_componets_.size();
+	IndexType fSize = (IndexType)hier_componets_.size();
 
 	map<IndexType,HFrame>::iterator  cIter= hier_componets_.begin();
 
@@ -430,8 +430,8 @@ void DualwayPropagation::splitAllSquenceGraph(IndexType iterN)
 
 	for (auto fIter = hier_componets_.begin(); fIter != hier_componets_.end(); ++ fIter)
 	{
-		IndexType gLevel = fIter->second.hier_label_bucket.size();
-		IndexType labeSize = fIter->second.hier_label_bucket[gLevel - 1].size();
+		IndexType gLevel = (IndexType)fIter->second.hier_label_bucket.size();
+		IndexType labeSize =(IndexType) fIter->second.hier_label_bucket[gLevel - 1].size();
 		Logger<<"  第"<<fIter->first<<"帧共分割出"<<labeSize<<"个块.\n";
 	}
 
@@ -447,7 +447,7 @@ void DualwayPropagation::split_twoAjacent_graph_next_order(IndexType srFrame, In
 
 	Logger<<" .......\n";
 	Logger<<"  Start next split.\n";
-	IndexType tgGraSize = hier_componets_[tgFrame].hier_graph.size();
+	IndexType tgGraSize = (IndexType)hier_componets_[tgFrame].hier_graph.size();
 	LabelsGraph* oriGra = hier_componets_[tgFrame].hier_graph[tgGraSize - 1];
 	LabelsGraph* new_graph = new LabelsGraph(*oriGra);
 
@@ -460,7 +460,7 @@ void DualwayPropagation::split_twoAjacent_graph_next_order(IndexType srFrame, In
 	//
 	IndexType gLevel = 0;
 
-	IndexType srGraSize = hier_componets_[srFrame].hier_graph.size();
+	IndexType srGraSize = (IndexType)hier_componets_[srFrame].hier_graph.size();
 
 	gLevel  = srGraSize - 1;//获取最新的层
 	LabelsGraph* srGraLat = hier_componets_[srFrame].hier_graph[gLevel];
@@ -496,7 +496,7 @@ void DualwayPropagation::split_twoAjacent_graph_next_order(IndexType srFrame, In
 
 		map<IndexType,HVertex*> edgeCorrNextVtx;
 
-		IndexType newGraphEdgeSize = new_graph->m_edges.size();
+		IndexType newGraphEdgeSize = (IndexType)new_graph->m_edges.size();
 
 		IndexType nodeId = checkNextLabelBucket(edgePoints,edgeCorrNextVtx);//获得边界点在下一帧对应的块和对应点
 		//IndexType nodeId = edgeCorrNextVtx.size();
@@ -559,7 +559,7 @@ void DualwayPropagation::split_twoAjacent_graph_next_order(IndexType srFrame, In
 
 		// 		//增加一个节点// 增加顶点操作放在前面.
 		// 
-		IndexType nSize = boost::num_vertices(*new_graph);
+		IndexType nSize = (IndexType)boost::num_vertices(*new_graph);
 		// 
 		// 		GraphVertexProperty vp(nSize,-1,-1);
 		// 
@@ -820,8 +820,8 @@ void DualwayPropagation::split_twoAjacent_graph_prev(IndexType srFrame, IndexTyp
 	Logger<<" .......\n";
 	Logger<<"  Start prev split.\n";
 
-	IndexType srGraphSize = hier_componets_[srFrame].hier_graph.size();
-	IndexType tgGraphSize = hier_componets_[tgFrame].hier_graph.size();
+	IndexType srGraphSize = (IndexType)hier_componets_[srFrame].hier_graph.size();
+	IndexType tgGraphSize = (IndexType)hier_componets_[tgFrame].hier_graph.size();
 
 	assert(srGraphSize > 0 && tgGraphSize > 0);
 
@@ -876,9 +876,9 @@ void DualwayPropagation::split_twoAjacent_graph_prev(IndexType srFrame, IndexTyp
 
 		map<IndexType,HVertex*> edgeCorrPrevVtx;
 
-		IndexType nSize = boost::num_vertices(*shouldSplitGraph);
+		IndexType nSize = (IndexType)boost::num_vertices(*shouldSplitGraph);
 
-		IndexType newGraphEdgeSize = shouldSplitGraph->m_edges.size(); //为了给新增加的边添加序号
+		IndexType newGraphEdgeSize = (IndexType)shouldSplitGraph->m_edges.size(); //为了给新增加的边添加序号
 
 		bool isSplit = true;
 
@@ -925,7 +925,7 @@ void DualwayPropagation::split_twoAjacent_graph_prev(IndexType srFrame, IndexTyp
 
 		}
 
-		IndexType  vtxBSize = splitedLabel->vertex_bucket.size();
+		IndexType  vtxBSize = (IndexType)splitedLabel->vertex_bucket.size();
 
 		ScalarType ration = (ScalarType)(strCorPsSzie + endCorPsSize)/vtxBSize;
 
@@ -1160,7 +1160,7 @@ void DualwayPropagation::split_twoAjacent_graph_prev(IndexType srFrame, IndexTyp
 }
 void DualwayPropagation::addGraphEdge(PCloudGraph& pcGraph, IndexType frameId)
 {
-	IndexType nSize = hier_componets_[frameId].label_of_vtx.size();
+	IndexType nSize = (IndexType)hier_componets_[frameId].label_of_vtx.size();
 
 	auto vIter = hier_componets_[frameId].label_of_vtx.begin();
 	auto vEnd = hier_componets_[frameId].label_of_vtx.end();
@@ -1220,7 +1220,7 @@ void DualwayPropagation::checkPsNewLabelParentPtr(vector<HLabel*> oriLabelBucket
 
 		HVertex* fVtx = (*vtxBucket.begin()).second;
 
-		IndexType vlfSize = fVtx->label_parent.size();
+		IndexType vlfSize = (IndexType)fVtx->label_parent.size();
 
 		if ( vlfSize < labParSize)
 		{
@@ -1354,7 +1354,7 @@ IndexType DualwayPropagation::checkNextLabelBucket(map<IndexType,HVertex*>& edge
 		//
 
 		//IndexType TestnextVtxLabid = hier_components_[2].label_of_vtx[corPId];
-		IndexType labParSize = iter->second->next_corr->label_parent.size();
+		IndexType labParSize = (IndexType)iter->second->next_corr->label_parent.size();
 		IndexType updateLevel = labParSize - 1;
 
 		IndexType nextVtxLabid = iter->second->next_corr->label_parent[updateLevel]->label_id;
@@ -1392,7 +1392,7 @@ void DualwayPropagation::generateOrderededges(IndexType srFrame, IndexType tgFra
 
 	Logger<<" .......\n";
 	Logger<<"  Start next split.\n";
-	IndexType tgGraSize = hier_componets_[tgFrame].hier_graph.size();
+	IndexType tgGraSize = (IndexType)hier_componets_[tgFrame].hier_graph.size();
 	LabelsGraph* oriGra = hier_componets_[tgFrame].hier_graph[tgGraSize - 1];
 	LabelsGraph* new_graph = new LabelsGraph(*oriGra);
 
@@ -1406,7 +1406,7 @@ void DualwayPropagation::generateOrderededges(IndexType srFrame, IndexType tgFra
 	//
 	IndexType gLevel = 0;
 
-	IndexType srGraSize = hier_componets_[srFrame].hier_graph.size();
+	IndexType srGraSize = (IndexType)hier_componets_[srFrame].hier_graph.size();
 
 	gLevel  = srGraSize - 1;//获取最新的层
 	LabelsGraph* srGraLat = hier_componets_[srFrame].hier_graph[gLevel];
@@ -1440,7 +1440,7 @@ void DualwayPropagation::generateOrderededges(IndexType srFrame, IndexType tgFra
 
 		map<IndexType,HVertex*> edgeCorrNextVtx;
 
-		IndexType newGraphEdgeSize = new_graph->m_edges.size();
+		IndexType newGraphEdgeSize = (IndexType)new_graph->m_edges.size();
 
 		//并没有更新图结构
 
@@ -1459,7 +1459,7 @@ void DualwayPropagation::generateOrderededges(IndexType srFrame, IndexType tgFra
 		IndexType recordS = 0;       
 		IndexType recordE = 0;
 
-		IndexType vtxBSzie = splitedLabel->vertex_bucket.size();
+		IndexType vtxBSzie = (IndexType)splitedLabel->vertex_bucket.size();
 		for (auto iter = splitedLabel->vertex_bucket.begin(); iter != splitedLabel->vertex_bucket.end(); iter ++)
 		{
 			IndexType prev_id = iter->second->prev_corr->label_parent[gLevel]->label_id; //
@@ -1519,7 +1519,7 @@ bool DualwayPropagation::checkPrevLabelBucket(map<IndexType,HVertex*>& edgePs, m
 
 	for (auto iter = edgePs.begin(); iter != edgePs.end(); iter ++)
 	{
-		IndexType labParSize =  iter->second->prev_corr->label_parent.size();
+		IndexType labParSize =  (IndexType)iter->second->prev_corr->label_parent.size();
 
 		IndexType updateLevel = labParSize - 1;
 
@@ -1583,18 +1583,18 @@ ScalarType DualwayPropagation::p2PatchGeoDis(IndexType cFrame, HVertex& oriP,map
 
 	ScalarType randDis = 0.0;
 
-	IndexType pSize = parthPs.size();
+	IndexType pSize = (IndexType)parthPs.size();
 
 	assert(pSize > 0);
 
 	IndexType srPId = oriP.vtx_id;
 	IndexType nodeId = hier_componets_[cFrame].gId_of_vtx[srPId];
 
-	ScalarType geoDis ;
+	ScalarType geoDis = 0.0 ;
 
 	PCloudGraph* pg = hier_componets_[cFrame].pcGraph;
 
-	IndexType nSize = boost::num_vertices(*pg);
+	IndexType nSize = (IndexType)boost::num_vertices(*pg);
 
 	//顶点描述符
 	pair<pcVertexIterator, pcVertexIterator> vi = boost::vertices(*pg);
@@ -1660,8 +1660,8 @@ void DualwayPropagation::mergePatchesAfterCoSeg() //0831
 				srBestSet.clear();
 				tgBestSet.clear();
 
-				IndexType srLevel = hier_componets_[frameId].hier_graph.size();
-				IndexType tgLevel = hier_componets_[frameId + 1].hier_graph.size();
+				IndexType srLevel = (IndexType)hier_componets_[frameId].hier_graph.size();
+				IndexType tgLevel = (IndexType)hier_componets_[frameId + 1].hier_graph.size();
 
 				GraphMatch pairFrameSimilar(SampleSet::get_instance(), hier_componets_, frameId, frameId + 1);
 
@@ -1680,7 +1680,7 @@ void DualwayPropagation::buildPatchCorrespondenceByLabel()
 	for (auto fiter = hier_componets_.begin(); fiter != hier_componets_.end(); ++fiter )
 	{
 		IndexType frame_id = fiter->first;
-		IndexType gLevel = fiter->second.hier_label_bucket.size();
+		IndexType gLevel = (IndexType)fiter->second.hier_label_bucket.size();
 		--gLevel;
 
 		vector<HLabel*>& labelBucket = fiter->second.hier_label_bucket[gLevel];
@@ -1690,7 +1690,7 @@ void DualwayPropagation::buildPatchCorrespondenceByLabel()
 
 			map<IndexType,IndexType> sr_labelIndexMap = fiter->second.hier_label_vtxBucket_index[gLevel];
 
-			IndexType tLevel = hier_componets_[frame_id + 1].hier_label_vtxBucket_index.size();
+			IndexType tLevel = (IndexType)hier_componets_[frame_id + 1].hier_label_vtxBucket_index.size();
 			--tLevel;
 
 			map<IndexType,IndexType> tg_labelIndexMap = hier_componets_[frame_id + 1].hier_label_vtxBucket_index[tLevel];
