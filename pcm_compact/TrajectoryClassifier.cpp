@@ -4,6 +4,7 @@
 #include "traj2AffineModel_distance.h"
 #include "traj2model_distance.h"
 #include "bfs_classifier.hpp"
+#include "merge_write_utilities.h"
 using namespace  std;
 void TrajectoryClassifier::run()
 {
@@ -109,7 +110,7 @@ void TrajectoryClassifier::run()
 
 
 
-		sprintf(corr_file_name,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\hksingle_corr%.2d_%.2f.txt",centerFrame,perC);
+		sprintf(corr_file_name,"D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr%.2d_%.2f.txt",centerFrame,perC);
 
 		FILE *in_correspond = fopen(corr_file_name,"w");
 
@@ -156,7 +157,7 @@ void TrajectoryClassifier::run()
 		char label_labsmooth[1024];
 
 
-		sprintf(label_labsmooth,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\orilabels%.2d_%.2f.txt",centerFrame,perC);
+		sprintf(label_labsmooth,"D:\\point_data\\plystandard\\finger\\label_and_corr\\orilabels%.2d_%.2f.txt",centerFrame,perC);
 
 		FILE *in_label_smooth = fopen(label_labsmooth, "w");
 
@@ -274,6 +275,11 @@ void TrajectoryClassifier::run()
 
 	}
 	Logger<< " End Clustering.\n";
+	mergeFile( 
+		"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\corr\\" ,
+		"D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr.txt",
+		"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\label\\",
+		"D:\\point_data\\plystandard\\finger\\label_and_corr\\cosegOOrder.txt");
 
 }
 void TrajectoryClassifier::setParamter(IndexType _trajLen,IndexType _octreeReso,ScalarType _perC,

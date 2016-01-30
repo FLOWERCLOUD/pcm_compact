@@ -164,6 +164,7 @@
     <ClCompile Include="GraphMatching.cpp" />
     <ClCompile Include="graph_cut_node.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="merge_write_utilities.cpp" />
     <ClCompile Include="multiway_propagation.cpp" />
     <ClCompile Include="sample.cpp" />
     <ClCompile Include="sample_properity.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="console.h" />
     <ClInclude Include="co_segmentation.h" />
     <ClInclude Include="DeformableRegistration.h" />
+    <ClInclude Include="filename_define.h" />
     <ClInclude Include="file_io.h" />
     <ClInclude Include="file_system.h" />
     <ClInclude Include="gco-v3.0\GCoptimization.h" />
@@ -193,6 +195,7 @@
     <ClInclude Include="GraphMatching.h" />
     <ClInclude Include="graph_cut_node.h" />
     <ClInclude Include="J_linkage_Matlab.hpp" />
+    <ClInclude Include="merge_write_utilities.h" />
     <ClInclude Include="multiway_propagation.h" />
     <ClInclude Include="octree.h" />
     <ClInclude Include="pool_allocator.h" />

@@ -1,7 +1,6 @@
 #ifndef _VERTEX_H
 #define _VERTEX_H
-#include "windows.h"
-#include <gl/gl.h>
+
 #include "selectable_item.h"
 #include <iostream>
 

@@ -91,8 +91,8 @@ void GCop::run()
 
 		//在初始分割之后, 分别进行split,coseg以及merge过程. 20151009
 	
-		char* in_label_file = "G:\\Projects\\EG2015\\rebuttal1127\\15_26\\totLabels(15_24)_3.txt";//smoothing again--12-13
-		char* in_corr_file  = "G:\\Projects\\EG2015\\rebuttal1127\\15_26\\totCorr(15_24).txt";
+		char* in_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\totLabels(15_24)_3.txt";//smoothing again--12-13
+		char* in_corr_file  = "D:\\point_data\\plystandard\\finger\\label_and_corr\\totCorr(15_24).txt";
 
 
 		DualwayPropagation dp_solver;
@@ -133,8 +133,8 @@ void GCop::refineSegm()
 	char input_label_file[2048];
 	char input_cor_file[2048];
 
-	sprintf_s(input_label_file,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\res-0.50\\J-0.50-splitMerge\\cosegOOrder%.2d.txt",m_centerF); //in order to smoothig after coseg,2015-12-05
-	sprintf_s(input_cor_file,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\res-0.50\\hksingle_corr%.2d_0.50.txt",m_centerF);
+	sprintf_s(input_label_file,"D:\\point_data\\plystandard\\finger\\label_and_corr\\cosegOOrder%.2d.txt",m_centerF); //in order to smoothig after coseg,2015-12-05
+	sprintf_s(input_cor_file,"D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr%.2d_0.50.txt",m_centerF);
 
 	m_nLabels = gcNode->readnLabelFile(input_label_file);
 	gcNode->read_corres_file(input_cor_file); 
@@ -151,12 +151,12 @@ void GCop::refineSegm()
 #endif // Expansion
 
 
-
+	visulizationLabels();
 }
 
 void GCop::splitProcess(DualwayPropagation& dp_solver)
 {
-	char* out_label_file = "G:\\Projects\\EG2015\\compar\\diffusionOrder\\1223SigsplitResultsSmth.txt";
+	char* out_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\1223SigsplitResultsSmth.txt";
 
 	dp_solver.splitAllSquenceGraph(0);//读取j-linkagelabel文件之后进行前后的分裂操作,参数表示序列分裂的帧数;
 
@@ -172,7 +172,7 @@ void GCop::splitProcess(DualwayPropagation& dp_solver)
 
 void GCop::cosegProcessing(DualwayPropagation& dp_solver)
 {
-	char* out_label_file = "G:\\Projects\\EG2015\\compar\\diffusionOrder\\1205cosegResults.txt";
+	char* out_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\1205cosegResults.txt";
 
 	CoSegmentation coseg_solver(SampleSet::get_instance(),dp_solver.getCompents());
 
@@ -195,7 +195,7 @@ void GCop::cosegProcessing(DualwayPropagation& dp_solver)
 
 void GCop::mergeProcess(DualwayPropagation& dp_solver)
 {
-	char* out_label_file = "G:\\Projects\\EG2015\\compar\\diffusionOrder\\1205mergeResults.txt";
+	char* out_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\1205mergeResults.txt";
 
 	dp_solver.mergePatchesAfterCoSeg(); // 读取共分割的label文件之后,建立图结构, 然后进行图的merge操作 0831
 
@@ -340,4 +340,202 @@ void GCop::setNeighbor()
 	delete [] dist;
 
 	neigh_pair.clear();
+}
+
+void GCop::visulizationLabels()
+{
+	IndexType centFrame = (gcNode->node_vec)[0]->frame;
+	Sample & curF = gcNode->m_smpSet[centFrame];
+
+
+	IndexType nNode = (IndexType)gcNode->node_vec.size();
+	// init prolabel
+
+	IndexType k = 0;
+	for (IndexType smpId = 0; smpId < nNode; smpId ++,k++)
+	{
+		m_optLabel.push_back(m_gc->whatLabel(k));
+	}
+
+
+	// 	IndexType nIter = 1;
+	// 	while (nIter-->0)
+	// 	{`
+	// 		smoothSampleLabel(curF,m_smpId,m_optLabel,m_optLabel);
+	// 	}
+	//// 
+	//diff_using_bfs(m_optLabel,m_smpId,centFrame);
+
+	IndexType finalLabels = orderLabels(m_optLabel);
+	//IndexType finalLabels = 2;
+
+#ifdef  SHOW_SAMPLE
+
+#ifdef OUTPUT_LABELS
+	char outputLabelName[1024]; 
+	sprintf(outputLabelName,"F:\\EG2015\\compar\\diffusionOrder\\labelAfterCoseg\\boundaryLabels%.2d.txt",centFrame);
+	FILE *in_label = fopen(outputLabelName,"w");
+	fprintf(in_label,"%d\n",finalLabels);
+#endif // OUTPUT_LABELS
+
+	IndexType i = 0;
+	IndexType ik = 0;
+	for (Sample::vtx_iterator v_iter = curF.begin();v_iter != curF.end();v_iter++,i++)
+	{
+		if (m_isSelect[i])
+		{
+#ifdef EXPSWAP
+			(*v_iter)->set_visble(true);
+			// 					if (m_isEdgePoint[i])
+			// 					{
+			// 						(*v_iter)->set_label(m_nLabels +1);
+			// 					}else
+			// 					{
+			(*v_iter)->set_label( m_optLabel[ik]);
+			//					}
+
+#else
+			(*v_iter)->set_visble(true);
+
+			if (m_inliers[i] == false)//可视化拟合平面--剔除噪声
+			{
+				(*v_iter)->set_label( m_optLabel[ik]);
+
+			}else
+			{
+				(*v_iter)->set_label(m_nLabels + 1);	
+			}
+#endif // EXPSWAP
+
+#ifdef OUTPUT_LABELS
+			fprintf(in_label,"%d %d %d\n",centFrame,m_optLabel[ik],i);
+#endif // OUTPUT_LABELS
+
+			ik++;
+		}else
+		{
+			(*v_iter)->set_visble(false);
+		}
+	}
+
+#ifdef OUTPUT_LABELS
+	fclose(in_label);
+#endif // OUTPUT_LABELS
+
+#else
+
+	vector<IndexType> result_labels(curF.num_vertices(),0);
+	propagateLabel2Orignal(curF,m_smpId,m_optLabel,result_labels);
+
+#ifdef OUTPUT_LABELS
+	char outputLabelName[256];
+	sprintf(outputLabelName,"G:\\Data\\horse\\quaEva1215\\J-linkage threshold test\\res-0.50\\J-0.50-splitMerge\\cosegfinal_labels%.2d.txt",centFrame);
+	FILE *in_label = fopen(outputLabelName,"w");
+	fprintf(in_label,"%d\n",finalLabels);
+#endif // OUTPUT_LABELS
+
+	IndexType i = 0;
+	for (Sample::vtx_iterator v_iter = curF.begin();v_iter != curF.end();v_iter++,i++)
+	{
+		(*v_iter)->set_label( result_labels[i]);
+
+#ifdef OUTPUT_LABELS
+		//fprintf(in_label,"%d %d %d\n",centFrame,m_gc->whatLabel(k),i);
+		fprintf(in_label,"%d %d %d\n",centFrame,result_labels[i],i);
+#endif // OUTPUT_LABELS
+
+	}
+
+#ifdef OUTPUT_LABELS
+	fclose(in_label);
+#endif // OUTPUT_LABELS
+
+#endif //  SHOW_SAMPLE
+
+
+}
+
+IndexType GCop::orderLabels(vector<IndexType>& labels)
+{
+	if (labels.size() == 0)
+	{
+		Logger<<" label's vector is empty!.\n";
+		return 0;
+	}
+
+	map<IndexType,IndexType> recordLabel;
+	map<IndexType,IndexType>::iterator fIt;
+
+
+	IndexType temp = 0;
+	auto iter = labels.begin();
+
+	recordLabel[(*iter)] = temp;
+
+	for (;iter != labels.end(); iter ++)
+	{
+		fIt = recordLabel.find(*iter);
+		if (fIt != recordLabel.end())
+		{
+			(*iter) = fIt->second;
+		}else
+		{
+			temp++;
+			recordLabel[(*iter)] = temp;
+			(*iter) = temp;
+		}
+	}
+
+	recordLabel.clear();
+
+	return temp + 1;
+}
+
+void GCop::propagateLabel2Orignal(Sample& oriPC,vector<IndexType>& sampleVtxId,vector<IndexType>& label_smp,vector<IndexType>& label_ori)
+{
+	Logger<<"start.\n";
+
+	IndexType nCluster = 35;
+
+	map<IndexType,IndexType> smpLabel;
+	map<IndexType,IndexType>::iterator IsValidIter;
+	for (int i = 0; i < label_smp.size(); i++)
+	{
+		smpLabel.insert(make_pair(sampleVtxId[i],label_smp[i]));
+	}
+
+	const IndexType k = 250;
+	IndexType neighbours[k];
+	ScalarType dist[k];
+
+	IndexType vtx_num = (IndexType)oriPC.num_vertices();
+	IndexType result_label;
+
+
+	for(IndexType vtx_id = 0; vtx_id < vtx_num; vtx_id ++)
+	{
+		vector<IndexType> recordLabelTime(nCluster,0);
+		result_label = -1;
+		oriPC.neighbours(vtx_id, k, neighbours, dist);
+		for(IndexType neig_id = 0; neig_id < k; neig_id ++)
+		{
+			IsValidIter = smpLabel.find(neighbours[neig_id]);
+			if(IsValidIter != smpLabel.end())
+			{
+				recordLabelTime[IsValidIter->second] += 1;
+			}
+		}
+		for (int i = 0; i < nCluster; i++)
+		{
+			if(result_label < recordLabelTime[i])
+			{
+				label_ori[vtx_id] = i;
+				result_label = recordLabelTime[i];
+			}
+		}
+
+	}
+
+	smpLabel.clear();
+	Logger<<"end.\n";
 }

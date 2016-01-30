@@ -81,6 +81,9 @@
     <ClCompile Include="gco-v3.0\GCoptimization.cpp">
       <Filter>Algorithm</Filter>
     </ClCompile>
+    <ClCompile Include="merge_write_utilities.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bfs_classifier.hpp">
@@ -178,6 +181,12 @@
     </ClInclude>
     <ClInclude Include="gco-v3.0\GCoptimization.h">
       <Filter>Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="filename_define.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="merge_write_utilities.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
