@@ -2,11 +2,14 @@
 #include "file_io.h"
 #include "TrajectoryClassifier.h"
 #include "GCop.h"
-
+#include "merge_write_utilities.h"
 int main(int argc, char *argv[])
 {
+
 	//1. read ply files
 	FileIO::load_point_cloud_files( "D:\\point_data\\plystandard\\finger\\",FileIO::PLY );
+	IndexType sampleNum = SampleSet::get_instance().size();
+#ifdef step2
 	//2. set parameter
 	IndexType neigNum, trajLen,resolution,modelT ,smallLife;
 	ScalarType _perC,thresHold;
@@ -27,7 +30,28 @@ int main(int argc, char *argv[])
 	cluster->setNeigNum(neigNum);
 	cluster->setParamter(trajLen,resolution,_perC,thresHold,modelT,smallLife,isEqual,isRigid);
 	cluster->run();
+	for(IndexType frameId = selectedSmpIdx ; frameId >0 ; --frameId)
+	{
+		cluster->setCenterFrame(frameId-1);
+		cluster->setParamter(trajLen,resolution,_perC,1,modelT,smallLife,isEqual,isRigid);
+		cluster->run();
+	}
+	for(IndexType frameId = selectedSmpIdx ; frameId < sampleNum-1 ; ++frameId)
+	{
+		cluster->setCenterFrame(frameId+1);
+		cluster->setParamter(trajLen,resolution,_perC,1,modelT,smallLife,isEqual,isRigid);
+		cluster->run();
+	}
+#endif
+#ifdef MERGE
+	mergeFile( 
+		"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\corr\\" ,
+		"D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr.txt",
+		"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\label\\",
+		"D:\\point_data\\plystandard\\finger\\label_and_corr\\cosegOOrder.txt");
+
 	return 0;
+#endif
 	//step2
 	GCop * graphCut = new GCop;
 	IndexType m_nLabels,m_nExpansion,m_nSwap,m_nGraphNeig,m_nCurNeig,m_centerF;

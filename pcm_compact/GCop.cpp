@@ -91,8 +91,8 @@ void GCop::run()
 
 		//在初始分割之后, 分别进行split,coseg以及merge过程. 20151009
 	
-		char* in_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\totLabels(15_24)_3.txt";//smoothing again--12-13
-		char* in_corr_file  = "D:\\point_data\\plystandard\\finger\\label_and_corr\\totCorr(15_24).txt";
+		char* in_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\cosegOOrder.txt";//smoothing again--12-13
+		char* in_corr_file  = "D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr.txt";
 
 
 		DualwayPropagation dp_solver;

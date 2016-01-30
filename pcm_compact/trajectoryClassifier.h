@@ -33,6 +33,7 @@ public:
 	void  setParamter(IndexType _trajLen,IndexType _octreeReso,ScalarType _perC,
 		ScalarType _thresHold,IndexType _modelT, IndexType _smallL,bool _isEqual,bool _isRigid);
 	void setNeigNum(IndexType _neigbNum);
+	void setCenterFrame(IndexType _centerNum);
 private:
 	void derive_rotation_by_svd( VecX& rot,const MatrixX3 &X, const MatrixX3& Y);
 	void diff_using_bfs( std::vector<IndexType>& labels,std::vector<IndexType>& centerVtxId,IndexType centerFrame );

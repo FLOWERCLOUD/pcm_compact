@@ -11,8 +11,8 @@ void mergeFile(char* CORR_FILESNAME ,char* CORR_FILEOUT_NAME , char* LABEL_FILES
 	char labeldirname[256] ,corrdirname[256];
 	strcpy(labeldirname ,LABEL_FILESNAME);
 	strcpy(corrdirname ,CORR_FILESNAME);
-	strcat( labeldirname ,"*");
-	strcat(corrdirname ,"*");
+	strcat( labeldirname ,"*.txt");
+	strcat(corrdirname ,"*.txt");
 	if( (fHandle=_findfirst( labeldirname, &fa ))==-1L )//这里可以改成需要的目录 
 	{
 		printf( "there are no ply file\n");
@@ -20,8 +20,11 @@ void mergeFile(char* CORR_FILESNAME ,char* CORR_FILEOUT_NAME , char* LABEL_FILES
 	else{
 		do
 		{
-			printf( "find:%s\n", fa.name );
-			labelfilenames.push_back( fa.name);
+			char cdirname[256];
+			strcpy(cdirname , LABEL_FILESNAME);
+			strcat(cdirname, fa.name);
+			printf( "find:%s\n",cdirname );
+			labelfilenames.push_back(cdirname);
 		}while( _findnext(fHandle,&fa)==0 );
 		_findclose( fHandle );
 	}
@@ -32,8 +35,11 @@ void mergeFile(char* CORR_FILESNAME ,char* CORR_FILEOUT_NAME , char* LABEL_FILES
 	else{
 		do
 		{
-			printf( "find:%s\n", fa.name );
-			corrfilenames.push_back( fa.name);
+			char cdirname[256];
+			strcpy(cdirname , CORR_FILESNAME);
+			strcat(cdirname, fa.name);
+			printf( "find:%s\n",cdirname );
+			corrfilenames.push_back( cdirname);
 		}while( _findnext(fHandle,&fa)==0 );
 		_findclose( fHandle );
 	}

@@ -4,7 +4,7 @@
 #include "traj2AffineModel_distance.h"
 #include "traj2model_distance.h"
 #include "bfs_classifier.hpp"
-#include "merge_write_utilities.h"
+
 using namespace  std;
 void TrajectoryClassifier::run()
 {
@@ -275,12 +275,6 @@ void TrajectoryClassifier::run()
 
 	}
 	Logger<< " End Clustering.\n";
-	mergeFile( 
-		"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\corr\\" ,
-		"D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr.txt",
-		"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\label\\",
-		"D:\\point_data\\plystandard\\finger\\label_and_corr\\cosegOOrder.txt");
-
 }
 void TrajectoryClassifier::setParamter(IndexType _trajLen,IndexType _octreeReso,ScalarType _perC,
 	ScalarType _thresHold,IndexType _modelT, IndexType _smallL,bool _isEqual, bool _isRigid)
@@ -298,6 +292,10 @@ void TrajectoryClassifier::setParamter(IndexType _trajLen,IndexType _octreeReso,
 void TrajectoryClassifier::setNeigNum(IndexType _neigbNum)
 {
 	neigborNum = _neigbNum;
+}
+void TrajectoryClassifier::setCenterFrame(IndexType _centerNum)
+{
+	centerFrame = _centerNum;
 }
 
 void TrajectoryClassifier::bubleSort(vector<IndexType>& oriData,vector<IndexType>& labels,IndexType lSize)
@@ -424,3 +422,5 @@ int TrajectoryClassifier::orderLabels(vector<IndexType>& labels)
 
 	return temp + 1;
 }
+
+
