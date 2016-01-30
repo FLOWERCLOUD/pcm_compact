@@ -110,7 +110,7 @@ void TrajectoryClassifier::run()
 
 
 
-		sprintf(corr_file_name,"D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr%.2d_%.2f.txt",centerFrame,perC);
+		sprintf(corr_file_name,"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\corr\\hksingle_corr%.2d_%.2f.txt",centerFrame,perC);
 
 		FILE *in_correspond = fopen(corr_file_name,"w");
 
@@ -157,7 +157,7 @@ void TrajectoryClassifier::run()
 		char label_labsmooth[1024];
 
 
-		sprintf(label_labsmooth,"D:\\point_data\\plystandard\\finger\\label_and_corr\\orilabels%.2d_%.2f.txt",centerFrame,perC);
+		sprintf(label_labsmooth,"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\label\\orilabels%.2d_%.2f.txt",centerFrame,perC);
 
 		FILE *in_label_smooth = fopen(label_labsmooth, "w");
 
