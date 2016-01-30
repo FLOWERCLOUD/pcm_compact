@@ -6,6 +6,7 @@
 int main(int argc, char *argv[])
 {
 	//1. read ply files
+	FileIO::load_point_cloud_files( "D:\\point_data\\plystandard\\finger\\",FileIO::PLY );
 	//2. set parameter
 	IndexType neigNum, trajLen,resolution,modelT ,smallLife;
 	ScalarType _perC,thresHold;
