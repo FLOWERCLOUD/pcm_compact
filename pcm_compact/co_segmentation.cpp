@@ -292,32 +292,32 @@ ScalarType CoSegmentation::similarity_between_component_back(IndexType i, IndexT
 //
 void CoSegmentation::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 & rotMat,MatrixXX & transVec)
 {
-	Eigen::Vector3d X_mean, Y_mean;
+	Vector3Type X_mean, Y_mean;
 
 	for(int i=0; i<3; ++i) //计算两点云的均值
 	{
-		X_mean(i) = srCloud.row(i).sum()/srCloud.cols();
-		Y_mean(i) = tgCloud.row(i).sum()/tgCloud.cols();
+		X_mean(i) = (ScalarType)srCloud.row(i).sum()/srCloud.cols();
+		Y_mean(i) = (ScalarType)tgCloud.row(i).sum()/tgCloud.cols();
 	}
 
 	srCloud.colwise() -= X_mean;
 	tgCloud.colwise() -= Y_mean;
 
 	/// Compute transformation
-	Eigen::Affine3d transformation;
-	Eigen::Matrix3d sigma = srCloud * tgCloud.transpose();
-	Eigen::JacobiSVD<Eigen::Matrix3d> svd(sigma, Eigen::ComputeFullU | Eigen::ComputeFullV);
+	Eigen::Affine3f transformation;
+	Eigen::Matrix3f sigma = (srCloud * tgCloud.transpose()).cast<float>();
+	Eigen::JacobiSVD<Eigen::Matrix3f> svd(sigma, Eigen::ComputeFullU | Eigen::ComputeFullV);
 	if(svd.matrixU().determinant()*svd.matrixV().determinant() < 0.0)//contains reflection
 	{
-		Eigen::Vector3d S = Eigen::Vector3d::Ones(); S(2) = -1.0;
+		Vector3Type S = Vector3Type::Ones(); S(2) = -1.0;
 		transformation.linear().noalias() = svd.matrixV()*S.asDiagonal()*svd.matrixU().transpose();
 	} else 
 	{
 		transformation.linear().noalias() = svd.matrixV()*svd.matrixU().transpose();//计算旋转矩阵
 	}
 
-	transVec = Y_mean - transformation.linear()*X_mean;
-	rotMat = transformation.linear() ;
+	transVec = Y_mean -( transformation.linear().cast<ScalarType>()*X_mean);
+	rotMat = transformation.linear().cast<ScalarType>() ;
 
 	srCloud.colwise() += X_mean;
 	tgCloud.colwise() += Y_mean;

@@ -178,7 +178,7 @@ public:
 	void produceDreamTraj(std::vector<PCloudTraj>& resTraj);
 	void produceDreamTraj(std::vector<PCloudTraj>& resTraj,std::vector<IndexType>& sampleCenter);
 	//calculate center
-	void calculateCenter(Matrix3X& oriCoordinate,Eigen::Vector3d& mean);
+	void calculateCenter(Matrix3X& oriCoordinate,Vector3Type& mean);
 
 	//calculate fix length traj
 	void calculateFixedLengthTraj( std::vector<PCloudTraj>& trajs, IndexType smp_idx,IndexType length );

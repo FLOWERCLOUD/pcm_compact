@@ -2549,7 +2549,7 @@ void GCoptimization::printStatus2(int alpha, int beta, int numVars, gcoclock_t t
 	if ( m_stepsThisCycleTotal > 0 )
 		printf(" \t(%d of %d);",m_stepsThisCycle+1,m_stepsThisCycleTotal);
 
-	printf(microsec > 100 ? "\t %.2f ms\n" : "\t %.3f ms\n",(double)microsec/1000.0);
+	printf(microsec > 100 ? "\t %.2f ms\n" : "\t %.3f ms\n",(ScalarType)microsec/1000.0);
 	flushnow();
 }
 

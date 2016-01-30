@@ -755,7 +755,7 @@ PCloudAffModel DeformableRegistration::constrcutAffineMotionMode(vector<PCloudTr
 	pModel.modelLifeSpan = comTime;
 
 
-	Eigen::Vector3d mean;
+	Vector3Type mean;
 	Matrix34 f_transf;
 	Matrix34 b_transf;
 	Matrix3X srPoints;
@@ -900,7 +900,7 @@ PCloudModel DeformableRegistration::constrcutRigidMotionMode(vector<PCloudTraj> 
 	pModel.modeLifeSpan = comTime;
 	pModel.Centers.setZero(3,totFrame);
 
-	Eigen::Vector3d mean;
+	Vector3Type mean;
 	Matrix33 f_rotmate;
 	Matrix33 b_rotmate;
 	Matrix3X srPoints;
@@ -1220,7 +1220,7 @@ void DeformableRegistration::combinationCoor(ScalarType stiffCoff,Sample & srGra
 //
 void DeformableRegistration::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 & rotMat)
 {
-	Eigen::Vector3d X_mean, Y_mean;
+	Vector3Type X_mean, Y_mean;
 	for(int i=0; i<3; ++i) //计算两点云的均值
 	{
 		X_mean(i) = (ScalarType)srCloud.row(i).sum()/srCloud.cols();
@@ -1249,7 +1249,7 @@ void DeformableRegistration::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,M
 	tgCloud.colwise() += Y_mean;
 }
 //
-void DeformableRegistration::calculateCenter(Matrix3X& oriCoordinate,Eigen::Vector3d& mean)
+void DeformableRegistration::calculateCenter(Matrix3X& oriCoordinate,Vector3Type& mean)
 {
 	assert(oriCoordinate.cols() > 0);
 	for(int i=0; i<3; ++i) //calculate center

@@ -290,7 +290,7 @@ public:
 		 IndexType fNum = 0;
 		 IndexType bNum = 0;
 		 PointType transPoint;
-		 Eigen::Vector3d x_mean,y_mean;
+		 Vector3Type x_mean,y_mean;
 		 Matrix33 rotmate;
 		 rotmate.setIdentity();
 		 x_mean.setZero();
@@ -452,7 +452,7 @@ public:
 		IndexType fNum = 0;
 		IndexType bNum = 0;
 		PointType transPoint;
-		Eigen::Vector3d x_mean,y_mean;
+		Vector3Type x_mean,y_mean;
 		Matrix33 rotmate;
 		rotmate.setIdentity();
 		x_mean.setZero();

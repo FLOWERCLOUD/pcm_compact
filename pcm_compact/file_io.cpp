@@ -25,7 +25,12 @@ namespace FileIO
 			{
 
 				ScalarType vx,vy,vz,nx,ny,nz,cx,cy,cz;
+#ifdef USE_FLOAT64
+
 				int status = fscanf(in_file, "%lf %lf %lf %lf %lf %lf %lf %lf %lf\n",&vx,&vy,&vz,
+#else
+				int status = fscanf(in_file, "%f %f %f %f %f %f %f %f %f\n",&vx,&vy,&vz,
+#endif // 
 					&nx,&ny,&nz,
 					&cx,&cy,&cz);
 				if(status==EOF)break;
@@ -47,7 +52,12 @@ namespace FileIO
 			while(true){
 
 				ScalarType vx,vy,vz,nx,ny,nz,cx,cy,cz;
+#ifdef USE_FLOAT64
+
 				int status = fscanf(in_file, "%lf %lf %lf %lf %lf %lf %lf %lf %lf\n",&vx,&vy,&vz,
+#else
+				int status = fscanf(in_file, "%f %f %f %f %f %f %f %f %f\n",&vx,&vy,&vz,
+#endif // 
 					&nx,&ny,&nz,
 					&cx,&cy,&cz);
 				if(status==EOF)break;

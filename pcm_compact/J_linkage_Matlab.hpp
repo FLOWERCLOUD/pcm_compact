@@ -97,6 +97,7 @@ public:
 
 		mxArray *mx_dm = mxCreateDoubleMatrix(pn, ln, mxREAL);
 		memcpy((char*)mxGetPr(mx_dm),(char*)distMat, pn*ln*sizeof(P2LDistanceType));
+		Logger<<"pn "<<pn<<"ln "<<ln<<std::endl;
 		engPutVariable(ep, "totd", mx_dm);
 		mxArray *mx_threshold = mxCreateDoubleMatrix(1,1,mxREAL);
 		memcpy((char*)mxGetPr(mx_threshold),(char*)(&p2l_dist_func_.lamda), sizeof(P2LDistanceType));

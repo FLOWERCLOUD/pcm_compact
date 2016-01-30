@@ -333,8 +333,7 @@ ScalarType GraphMatch::backDeformationErr(map<IndexType,HVertex*>& backeComVtx)
 
 void  GraphMatch::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 & rotMat,MatrixXX & transVec)
 {
-	Eigen::Vector3d X_mean, Y_mean;
-
+	Vector3Type X_mean, Y_mean;
 	for(int i=0; i<3; ++i) //计算两点云的均值
 	{
 		X_mean(i) = (ScalarType)srCloud.row(i).sum()/srCloud.cols();
@@ -357,7 +356,7 @@ void  GraphMatch::point2point(Matrix3X & srCloud,Matrix3X & tgCloud,Matrix33 & r
 		transformation.linear().noalias() = svd.matrixV()*svd.matrixU().transpose();//计算旋转矩阵
 	}
 
-	transVec = Y_mean - (transformation.linear().cast<double>()*X_mean);
+	transVec = Y_mean - (transformation.linear().cast<ScalarType>()*X_mean);
 	rotMat = transformation.linear().cast<ScalarType>();
 
 	srCloud.colwise() += X_mean;

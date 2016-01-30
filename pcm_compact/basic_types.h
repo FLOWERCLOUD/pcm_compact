@@ -55,9 +55,11 @@ typedef numeric::int32 IndexType;
 
 #ifdef USE_FLOAT64
 typedef numeric::float64 ScalarType;
+typedef Eigen::Vector3d Vector3Type;
 #define TW_TYPE_SCALARTYPE TW_TYPE_FLOAT64
 #else
 typedef numeric::float32 ScalarType;
+typedef Eigen::Vector3f Vector3Type;
 #define TW_TYPE_SCALARTYPE TW_TYPE_FLOAT32
 #endif
 
@@ -126,6 +128,7 @@ typedef Eigen::Matrix<IndexType,  3,              6>              Matrix36i;
 	typedef Eigen::Matrix<ScalarType, 3, 1, Eigen::DontAlign> PointType;
 	typedef Eigen::Matrix<ScalarType, 3, 1, Eigen::DontAlign> NormalType;
 	typedef Eigen::Matrix<ScalarType, 4, 1, Eigen::DontAlign> ColorType;
+
 #endif 
 
 

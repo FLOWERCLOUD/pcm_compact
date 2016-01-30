@@ -164,7 +164,7 @@ public:
 
 	void calculateSimilar2Componet();
 
-	void propagateLabel2Orignal(Sample& oriPC,std::vector<IndexType>& sampleVtxId,std::vector<IndexType>& label_smp,std::vector<double>& label_ori);
+	void propagateLabel2Orignal(Sample& oriPC,std::vector<IndexType>& sampleVtxId,std::vector<IndexType>& label_smp,std::vector<ScalarType>& label_ori);
 
 public:
 
