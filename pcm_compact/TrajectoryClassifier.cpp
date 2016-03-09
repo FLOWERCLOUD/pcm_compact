@@ -4,7 +4,9 @@
 #include "traj2AffineModel_distance.h"
 #include "traj2model_distance.h"
 #include "bfs_classifier.hpp"
-
+#include <io.h>
+#include <windows.h>
+#include <tchar.h>
 using namespace  std;
 void TrajectoryClassifier::run()
 {
@@ -109,8 +111,13 @@ void TrajectoryClassifier::run()
 		char corr_file_name[1024];
 
 
-
-		sprintf(corr_file_name,"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\corr\\hksingle_corr%.2d_%.2f.txt",centerFrame,perC);
+		if(_access(".\\tmp",0) == -1){
+			CreateDirectory(_T(".\\tmp"), NULL);
+		}
+		if(_access(".\\tmp\\corr",0) == -1){
+			CreateDirectory(_T(".\\tmp\\corr"), NULL);
+		}
+		sprintf(corr_file_name,".\\tmp\\corr\\hksingle_corr%.2d_%.2f.txt",centerFrame,perC);
 
 		FILE *in_correspond = fopen(corr_file_name,"w");
 
@@ -156,8 +163,13 @@ void TrajectoryClassifier::run()
 
 		char label_labsmooth[1024];
 
-
-		sprintf(label_labsmooth,"D:\\point_data\\plystandard\\finger\\label_and_corr\\tmp\\label\\orilabels%.2d_%.2f.txt",centerFrame,perC);
+		if(_access(".\\tmp",0) == -1){
+			CreateDirectory(_T(".\\tmp"), NULL);
+		}
+		if(_access(".\\tmp\\results",0) == -1){
+			CreateDirectory(_T(".\\tmp\\label"), NULL);
+		}
+		sprintf(label_labsmooth,".\\tmp\\label\\orilabels%.2d_%.2f.txt",centerFrame,perC);
 
 		FILE *in_label_smooth = fopen(label_labsmooth, "w");
 
@@ -165,7 +177,10 @@ void TrajectoryClassifier::run()
 
 		for ( int i=0; i<set[centerFrame].num_vertices(); i++ )
 		{
-			fprintf( in_label_smooth, "%d %d %d\n", centerFrame, result_label[i], i );
+			if (isSelector[i])  //to output sampled vtx
+			{
+				fprintf( in_label_smooth, "%d %d %d\n", centerFrame, result_label[i], i );
+			}
 		}
 
 		fclose(in_label_smooth);
@@ -421,6 +436,19 @@ int TrajectoryClassifier::orderLabels(vector<IndexType>& labels)
 	recordLabel.clear();
 
 	return temp + 1;
+}
+
+TrajectoryClassifier::TrajectoryClassifier(IndexType cFrame)
+{
+	centerFrame = cFrame;
+	trajLen = 2;
+	octreeRes = 32;
+	perC = 0.55;
+	threshold = 0.7;
+	modelT = 1;
+	lifeT = 2;
+	isEqual = true;
+	isRigid = false;
 }
 
 

@@ -11,18 +11,7 @@
 class TrajectoryClassifier
 {
 public:
-	TrajectoryClassifier(IndexType cFrame)
-	{
-		centerFrame = cFrame;
-		trajLen = 2;
-		octreeRes = 32;
-		perC = 0.45;
-		threshold = 0.7;
-		modelT = 1;
-		lifeT = 2;
-		isEqual = true;
-		isRigid = false;
-	}
+	TrajectoryClassifier(IndexType cFrame);
 	void run() ;
 public:
 	void derive_rotation_by_svd(VecX& rot,const MatrixX3 &X,  MatrixX3& Y,MatrixXXi& vtx_map);

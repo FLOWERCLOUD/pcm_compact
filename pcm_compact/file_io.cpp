@@ -91,10 +91,15 @@ namespace FileIO
 		intptr_t fHandle;
 		char dirname[256];
 		strcpy(dirname ,filesDir.c_str());
-		strcat( dirname ,"*.ply");
+		strcat( dirname ,"*.ply");   //in order to eliminate paths: "." , ".."
+		if(_access(filesDir.c_str(),0) == -1){
+			printf( "input label files path not exits\n");
+			return;
+		}
 		if( (fHandle=_findfirst( dirname, &fa ))==-1L )//这里可以改成需要的目录 
 		{
 			printf( "there are no ply file\n");
+			return;
 		}
 		else{
 			do

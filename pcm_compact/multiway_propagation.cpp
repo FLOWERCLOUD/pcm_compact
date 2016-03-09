@@ -249,6 +249,7 @@ void DualwayPropagation::read_label_file_coseg(char *label_file_name)
 	FILE* in_file = fopen(label_file_name, "r");
 	if (in_file==NULL)
 	{
+		printf("no input labels file \n");
 		return;
 	}
 	IndexType frame, label, vtx_idx;
@@ -292,6 +293,7 @@ void DualwayPropagation::read_corr_file_coseg(char* corr_file_name)
 	FILE* in_file = fopen(corr_file_name,"r");
 	if(in_file==NULL)
 	{
+		printf("no input corrs file \n");
 		return;
 	}
 

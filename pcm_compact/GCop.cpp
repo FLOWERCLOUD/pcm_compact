@@ -3,7 +3,11 @@
 #include "graph_cut_node.h"//default current folder
 #include <gco-v3.0/GCoptimization.h>
 #include "co_segmentation.h"
-
+#include "merge_write_utilities.h"
+#include <stdlib.h>
+#include <windows.h>
+#include <tchar.h>
+extern char* filename;
 GCop::GCop()
 {
 	gcNode = NULL;
@@ -91,8 +95,8 @@ void GCop::run()
 
 		//在初始分割之后, 分别进行split,coseg以及merge过程. 20151009
 	
-		char* in_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\cosegOOrder.txt";//smoothing again--12-13
-		char* in_corr_file  = "D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr.txt";
+		char* in_label_file = ".\\tmp\\results\\cosegOOrder.txt";//smoothing again--12-13
+		char* in_corr_file  = ".\\tmp\\results\\hksingle_corr.txt";
 
 
 		DualwayPropagation dp_solver;
@@ -133,8 +137,8 @@ void GCop::refineSegm()
 	char input_label_file[2048];
 	char input_cor_file[2048];
 
-	sprintf_s(input_label_file,"D:\\point_data\\plystandard\\finger\\label_and_corr\\cosegOOrder%.2d.txt",m_centerF); //in order to smoothig after coseg,2015-12-05
-	sprintf_s(input_cor_file,"D:\\point_data\\plystandard\\finger\\label_and_corr\\hksingle_corr%.2d_0.50.txt",m_centerF);
+	sprintf_s(input_label_file,".\\tmp\\results\\cosegOOrder%.2d.txt",m_centerF); //in order to smoothig after coseg,2015-12-05
+	sprintf_s(input_cor_file,".\\tmp\\results\\hksingle_corr%.2d_0.50.txt",m_centerF);
 
 	m_nLabels = gcNode->readnLabelFile(input_label_file);
 	gcNode->read_corres_file(input_cor_file); 
@@ -156,7 +160,13 @@ void GCop::refineSegm()
 
 void GCop::splitProcess(DualwayPropagation& dp_solver)
 {
-	char* out_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\1223SigsplitResultsSmth.txt";
+	char* out_label_file = ".\\tmp\\results\\1223SigsplitResultsSmth.txt";
+	if(_access(".\\tmp",0) == -1){
+		CreateDirectory(_T(".\\tmp"), NULL);
+	}
+	if(_access(".\\tmp\\results",0) == -1){
+		CreateDirectory(_T(".\\tmp\\results"), NULL);
+	}
 
 	dp_solver.splitAllSquenceGraph(0);//读取j-linkagelabel文件之后进行前后的分裂操作,参数表示序列分裂的帧数;
 
@@ -166,13 +176,29 @@ void GCop::splitProcess(DualwayPropagation& dp_solver)
 	//dp_solver.mergeSingleTinyPatches(30); //remove empty segments 加入了循环操作,
 
 	dp_solver.wirteSplitGraphLables(out_label_file);//可视化合并后的结果
+	if(_access(".\\tmp",0) == -1){
+		CreateDirectory(_T(".\\tmp"), NULL);
+	}
+	if(_access(".\\tmp\\ply",0) == -1){
+		CreateDirectory(_T(".\\tmp\\ply"), NULL);
+	}
+	if(_access(".\\tmp\\ply\\split",0) == -1){
+		CreateDirectory(_T(".\\tmp\\ply\\split"), NULL);
+	}
+	generateSamplePly( out_label_file ,".\\tmp\\ply\\split\\",filename);
 
 
 }
 
 void GCop::cosegProcessing(DualwayPropagation& dp_solver)
 {
-	char* out_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\1205cosegResults.txt";
+	char* out_label_file = ".\\tmp\\results\\1205cosegResults.txt";
+	if(_access(".\\tmp",0) == -1){
+		CreateDirectory(_T(".\\tmp"), NULL);
+	}
+	if(_access(".\\tmp\\results",0) == -1){
+		CreateDirectory(_T(".\\tmp\\results"), NULL);
+	}
 
 	CoSegmentation coseg_solver(SampleSet::get_instance(),dp_solver.getCompents());
 
@@ -189,13 +215,29 @@ void GCop::cosegProcessing(DualwayPropagation& dp_solver)
 	//dp_solver.mergeSingleTinyPatches(50);
 
 	dp_solver.wirteSplitGraphLables(out_label_file);
+	if(_access(".\\tmp",0) == -1){
+		CreateDirectory(_T(".\\tmp"), NULL);
+	}
+	if(_access(".\\tmp\\ply",0) == -1){
+		CreateDirectory(_T(".\\tmp\\ply"), NULL);
+	}
+	if(_access(".\\tmp\\ply\\cog",0) == -1){
+		CreateDirectory(_T(".\\tmp\\ply\\cog"), NULL);
+	}
+	generateSamplePly( out_label_file ,".\\tmp\\ply\\cog\\",filename);
 
 
 }
 
 void GCop::mergeProcess(DualwayPropagation& dp_solver)
 {
-	char* out_label_file = "D:\\point_data\\plystandard\\finger\\label_and_corr\\1205mergeResults.txt";
+	char* out_label_file = ".\\tmp\\results\\1205mergeResults.txt";
+	if(_access(".\\tmp",0) == -1){
+		CreateDirectory(_T(".\\tmp"), NULL);
+	}
+	if(_access(".\\tmp\\results",0) == -1){
+		CreateDirectory(_T(".\\tmp\\results"), NULL);
+	}
 
 	dp_solver.mergePatchesAfterCoSeg(); // 读取共分割的label文件之后,建立图结构, 然后进行图的merge操作 0831
 
@@ -204,7 +246,16 @@ void GCop::mergeProcess(DualwayPropagation& dp_solver)
 	//dp_solver.mergePatchTraj();
 
 	dp_solver.wirteSplitGraphLables(out_label_file);//可视化合并后的结果
-
+	if(_access(".\\tmp",0) == -1){
+		CreateDirectory(_T(".\\tmp"), NULL);
+	}
+	if(_access(".\\tmp\\ply",0) == -1){
+		CreateDirectory(_T(".\\tmp\\ply"), NULL);
+	}
+	if(_access(".\\tmp\\ply\\merge",0) == -1){
+		CreateDirectory(_T(".\\tmp\\ply\\merge"), NULL);
+	}
+	generateSamplePly( out_label_file,".\\tmp\\ply\\merge\\",filename);
 
 }
 
